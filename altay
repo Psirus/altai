@@ -140,7 +140,7 @@ class VentedBoxFrame(QtGui.QWidget):
         box_param_hbox.addRow(box_fb_label, box_fb_spinbox)
         box_param_group.setLayout(box_param_hbox)
 
-        qb3_box = VentedBox(Vab=0.022, Fb=55.3)
+        qb3_box = VentedBox(Vab=0.022, fb=55.3)
         self.current_box = qb3_box
 
         driver_selection = QtGui.QGroupBox("Driver Selection")
@@ -189,7 +189,7 @@ class VentedBoxFrame(QtGui.QWidget):
 
         box_volume_spinbox.setValue(1e3*self.current_box.Vab)
         box_volume_spinbox.valueChanged.connect(self.change_box_size)
-        box_fb_spinbox.setValue(self.current_box.Fb)
+        box_fb_spinbox.setValue(self.current_box.fb)
         box_fb_spinbox.valueChanged.connect(self.change_box_fb)
 
     def get_response(self, driver, box):
@@ -211,11 +211,11 @@ class VentedBoxFrame(QtGui.QWidget):
         return (w, h)
 
     def change_box_size(self, volume):
-        self.current_box.set_Vab(1e-3*volume)
+        self.current_box.Vab = 1e-3*volume
         self.update_response()
 
-    def change_box_fb(self, Fb):
-        self.current_box.set_Fb(Fb)
+    def change_box_fb(self, fb):
+        self.current_box.fb = fb
         self.update_response()
 
     def set_manufacturer(self, index):
@@ -243,7 +243,7 @@ class VentedBoxFrame(QtGui.QWidget):
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
         box_volume = 1e3*self.current_box.Vab
-        box_tuning = self.current_box.Fb
+        box_tuning = self.current_box.fb
         label = '{0} {1} in {2:2g}l / {3}Hz'.format(
                 manufacturer, model, box_volume, box_tuning)
         self.amplitude_line.set_label(label)
@@ -256,7 +256,7 @@ class VentedBoxFrame(QtGui.QWidget):
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
         box_volume = 1e3*self.current_box.Vab
-        box_tuning = self.current_box.Fb
+        box_tuning = self.current_box.fb
         label = '{0} {1} in {2:2g}l / {3}Hz'.format(
                 manufacturer, model, box_volume, box_tuning)
         self.amplitude_line.set_label(label)
