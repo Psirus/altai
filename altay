@@ -8,6 +8,7 @@ import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 # Altay imports
 from vented_box_frame import VentedBoxFrame
+from vent_dimensions_frame import VentDimensionsFrame
 from driver_database import DriverDatabaseFrame
 
 class Gui(QtGui.QMainWindow):
@@ -17,25 +18,25 @@ class Gui(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.setWindowTitle("Altay")
 
-        self.vented_box_frame = VentedBoxFrame()
-
         self.create_menu()
-        self.setCentralWidget(self.vented_box_frame)
 
         self.tab_bar = QtGui.QTabBar()
-        self.tab_bar.addTab('Vented Box Response')
-        self.tab_bar.addTab('Driver Database')
-
+        self.tab_bar.addTab("Vented Box Response")
+        self.tab_bar.addTab("Vent Dimensions")
+        self.tab_bar.addTab("Driver Database")
         self.tab_bar.currentChanged.connect(self.change_main_tab)
 
-        self.vented_box_frame = VentedBoxFrame()
-        self.driver_database_frame = DriverDatabaseFrame()
+        self.main_frames = []
+        self.main_frames.append(VentedBoxFrame())
+        self.main_frames.append(VentDimensionsFrame())
+        self.main_frames.append(DriverDatabaseFrame())
 
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(self.tab_bar)
-        vbox.addWidget(self.vented_box_frame)
-        vbox.addWidget(self.driver_database_frame)
-        self.driver_database_frame.hide()
+        for i, frame in enumerate(self.main_frames):
+            vbox.addWidget(frame)
+            if i > 0:
+                frame.hide()
 
         self.main_frame = QtGui.QWidget()
         self.main_frame.setLayout(vbox)
@@ -43,12 +44,11 @@ class Gui(QtGui.QMainWindow):
 
     def change_main_tab(self, tab_index):
         """ Switch between main tab views. """
-        if tab_index == 0:
-            self.vented_box_frame.show()
-            self.driver_database_frame.hide()
-        elif tab_index == 1:
-            self.vented_box_frame.hide()
-            self.driver_database_frame.show()
+        for i, frame in enumerate(self.main_frames):
+            if tab_index == i:
+                frame.show()
+            else:
+                frame.hide()
 
     def create_menu(self):
         """ Create main menu """

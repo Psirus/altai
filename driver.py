@@ -8,6 +8,7 @@ class Driver(object):
         self.model = model
         self.Qts = 0.0
         self.Sd = 0.0
+        self.xmax = 0.0
 
     @property
     def fs(self):

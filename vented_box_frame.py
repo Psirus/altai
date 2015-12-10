@@ -50,8 +50,8 @@ class VentedBoxFrame(QtGui.QWidget):
 
         # Box parameter setup
         box_param_group = QtGui.QGroupBox("Box Parameters")
-        box_param_hbox = QtGui.QFormLayout(self)
-        box_param_hbox.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
+        box_param_form = QtGui.QFormLayout(self)
+        box_param_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
         box_volume_label = QtGui.QLabel(self)
         box_volume_label.setText("Box Volume")
         box_volume_spinbox = QtGui.QDoubleSpinBox(self)
@@ -62,9 +62,9 @@ class VentedBoxFrame(QtGui.QWidget):
         box_fb_spinbox = QtGui.QDoubleSpinBox(self)
         box_fb_spinbox.setSuffix(" Hz")
         box_fb_spinbox.setRange(20.0, 200.0)
-        box_param_hbox.addRow(box_volume_label, box_volume_spinbox)
-        box_param_hbox.addRow(box_fb_label, box_fb_spinbox)
-        box_param_group.setLayout(box_param_hbox)
+        box_param_form.addRow(box_volume_label, box_volume_spinbox)
+        box_param_form.addRow(box_fb_label, box_fb_spinbox)
+        box_param_group.setLayout(box_param_form)
 
         qb3_box = VentedBox(Vab=0.022, fb=55.3)
         self.current_box = qb3_box
@@ -99,9 +99,9 @@ class VentedBoxFrame(QtGui.QWidget):
                     and (self.current_manuf == driver.manufacturer)):
                 self.current_driver = driver
 
-        driver_selection_hbox.addRow(driver_manuf_label, self.driver_manuf_box)
-        driver_selection_hbox.addRow(driver_model_label, self.driver_model_box)
-        driver_selection.setLayout(driver_selection_hbox)
+        driver_selection_form.addRow(driver_manuf_label, self.driver_manuf_box)
+        driver_selection_form.addRow(driver_model_label, self.driver_model_box)
+        driver_selection.setLayout(driver_selection_form)
 
         # Assemble main view
         hbox = QtGui.QHBoxLayout()
