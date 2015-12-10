@@ -1,4 +1,5 @@
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 from driver import Driver
 
 bc15sw115 = Driver("B&C Speakers", "15SW115")
@@ -30,7 +31,6 @@ class DriverDatabaseFrame(QtGui.QWidget):
         self.tableWidget.setHorizontalHeaderLabels(["Manufacturer", "Model", 
             "Fs [Hz]", u"Vas [m³]", u"Sd [m²]", "Qts"])
 
-
         for driver in driver_db:
             self.addDriver(driver)
 
@@ -42,17 +42,15 @@ class DriverDatabaseFrame(QtGui.QWidget):
         rows = self.tableWidget.rowCount()
         self.tableWidget.setRowCount(rows+1)
 
-        manuf = QtGui.QTableWidgetItem(driver.manufacturer)
-        model = QtGui.QTableWidgetItem(driver.model)
-        Fs    = QtGui.QTableWidgetItem(str(driver.Fs))
-        Vas   = QtGui.QTableWidgetItem(str(driver.Vas))
-        Sd    = QtGui.QTableWidgetItem(str(driver.Sd))
-        Qts   = QtGui.QTableWidgetItem(str(driver.Qts))
+        items = []
+        items.append(QtGui.QTableWidgetItem(driver.manufacturer))
+        items.append(QtGui.QTableWidgetItem(driver.model))
+        items.append(QtGui.QTableWidgetItem(str(driver.Fs)))
+        items.append(QtGui.QTableWidgetItem(str(driver.Vas)))
+        items.append(QtGui.QTableWidgetItem(str(driver.Sd)))
+        items.append(QtGui.QTableWidgetItem(str(driver.Qts)))
 
-        self.tableWidget.setItem(rows, 0, manuf)
-        self.tableWidget.setItem(rows, 1, model)
-        self.tableWidget.setItem(rows, 2, Fs)
-        self.tableWidget.setItem(rows, 3, Vas)
-        self.tableWidget.setItem(rows, 4, Sd)
-        self.tableWidget.setItem(rows, 5, Qts)
+        for i, item in enumerate(items):
+            item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
+            self.tableWidget.setItem(rows, i, item)
 
