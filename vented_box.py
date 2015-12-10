@@ -1,5 +1,5 @@
-from air import rho, c
 import numpy as np
+from air import rho, c
 
 class VentedBox(object):
     """ Model a vented box loudspeaker enclosure """
@@ -20,7 +20,7 @@ class VentedBox(object):
     def Vab(self, Vab):
         self._Vab = Vab
         self.Cab = Vab / (rho*c**2)
-        
+
     @property
     def fb(self):
         """ Box Tuning Frequency in Hz"""

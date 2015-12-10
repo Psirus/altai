@@ -26,21 +26,22 @@ class DriverDatabaseFrame(QtGui.QWidget):
     def __init__(self):
         QtGui.QWidget.__init__(self)
 
-        self.tableWidget = QtGui.QTableWidget(self)
-        self.tableWidget.setColumnCount(6)
-        self.tableWidget.setHorizontalHeaderLabels(["Manufacturer", "Model", 
-            "Fs [Hz]", "Vas [m³]", "Sd [m²]", "Qts"])
+        self.table_widget = QtGui.QTableWidget(self)
+        self.table_widget.setColumnCount(6)
+        self.table_widget.setHorizontalHeaderLabels(
+            ["Manufacturer", "Model", "Fs [Hz]", "Vas [m³]", "Sd [m²]", "Qts"])
 
         for driver in driver_db:
-            self.addDriver(driver)
+            self.add_driver(driver)
 
         vbox = QtGui.QVBoxLayout()
-        vbox.addWidget(self.tableWidget)
+        vbox.addWidget(self.table_widget)
         self.setLayout(vbox)
 
-    def addDriver(self, driver):
-        rows = self.tableWidget.rowCount()
-        self.tableWidget.setRowCount(rows+1)
+    def add_driver(self, driver):
+        """ Add a new driver to the QTableWidget """
+        rows = self.table_widget.rowCount()
+        self.table_widget.setRowCount(rows+1)
 
         items = []
         items.append(QtGui.QTableWidgetItem(driver.manufacturer))
@@ -52,5 +53,5 @@ class DriverDatabaseFrame(QtGui.QWidget):
 
         for i, item in enumerate(items):
             item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
-            self.tableWidget.setItem(rows, i, item)
+            self.table_widget.setItem(rows, i, item)
 

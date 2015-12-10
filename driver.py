@@ -1,5 +1,5 @@
-from air import rho, c
 import numpy as np
+from air import rho, c
 
 class Driver(object):
     """ Class to model drivers """
