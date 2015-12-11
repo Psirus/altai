@@ -1,23 +1,32 @@
 # -*- coding: utf-8 -*-
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
+import pickle
+import os
+import sys
+import shutil
+
 from driver import Driver
 
-bc15sw115      = Driver("B&C Speakers", "15SW115")
-bc15sw115.fs   = 35.0
-bc15sw115.Vas  = 0.11
-bc15sw115.Qts  = 0.24
-bc15sw115.Sd   = 0.0855
-bc15sw115.xmax = 0.0135
+# generate altay config dir if if does not exist;
+# under Unix '~/.local/share/data/altay'
+data_dir = QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DataLocation)
+altay_config_dir = os.path.join(data_dir[:-1], 'altay')
+try: 
+    os.makedirs(altay_config_dir)
+except OSError:
+    if not os.path.isdir(altay_config_dir):
+        raise
 
-eighteen15nlw9401      = Driver("Eighteen Sound", "15NLW9401")
-eighteen15nlw9401.fs   = 39.0
-eighteen15nlw9401.Vas  = 0.134
-eighteen15nlw9401.Qts  = 0.26
-eighteen15nlw9401.Sd   = 0.09
-eighteen15nlw9401.xmax = 0.01
+# check if local driver database exists; if not copy it from altay source dir
+local_db_fname = os.path.join(altay_config_dir, 'driver_db.ddb')
+if not os.path.isfile(local_db_fname):
+    altay_bin_dir = os.path.dirname(sys.argv[0])
+    included_db_fname = os.path.join(altay_bin_dir, 'driver_db.ddb')
+    shutil.copy(included_db_fname, local_db_fname)
 
-driver_db = [bc15sw115, eighteen15nlw9401]
+with open(local_db_fname, 'rb') as f:
+    driver_db = pickle.load(f)
 
 manufacturers = set()
 for driver in driver_db:      
