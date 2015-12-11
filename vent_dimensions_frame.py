@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import PySide.QtGui as QtGui
 
@@ -55,7 +56,7 @@ class VentDimensionsFrame(QtGui.QWidget):
         self.vent_area_value = QtGui.QLabel(self)
         radius = self.vent_radius_spinbox.value()
         vent_area = np.pi*radius**2
-        self.vent_area_value.setText("{0:4g}mm²".format(vent_area))
+        self.vent_area_value.setText(u"{0:4g}mm²".format(vent_area))
 
         # Vent length
         vent_length_label = QtGui.QLabel(self)
@@ -131,7 +132,7 @@ class VentDimensionsFrame(QtGui.QWidget):
     def radius_changed(self, radius):
         """ When radius is changed, recompute area and length """
         vent_area = np.pi*radius**2
-        self.vent_area_value.setText("{0:4g}mm²".format(vent_area))
+        self.vent_area_value.setText(u"{0:4g}mm²".format(vent_area))
         # convert to m
         length = self.find_length(1e-3*radius)
         self.vent_length_spinbox.setValue(1e3*length)
@@ -140,7 +141,7 @@ class VentDimensionsFrame(QtGui.QWidget):
         """ When length is changed, recompute area and radius """
         radius = self.find_radius(1e-3*length)
         vent_area = np.pi*(1e3*radius)**2
-        self.vent_area_value.setText("{0:4g}mm²".format(vent_area))
+        self.vent_area_value.setText(u"{0:4g}mm²".format(vent_area))
         self.vent_radius_spinbox.setValue(1e3*radius)
 
     def change_box_size(self, Vab):
@@ -184,10 +185,10 @@ class VentDimensionsFrame(QtGui.QWidget):
         driver = self.current_driver
         Vd = driver.Sd * driver.xmax
         Sp_min = 1e6*0.8*self.current_box.fb*Vd
-        label = ("With the {0} {1},\n"
-                 "in an enclosure tuned to {2}Hz,\n"
-                 "the vent area should be at least {3:3g}mm²\n"
-                 "to prevent large losses or excessive vent noise."
+        label = (u"With the {0} {1},\n"
+                 u"in an enclosure tuned to {2}Hz,\n"
+                 u"the vent area should be at least {3:3g}mm²\n"
+                 u"to prevent large losses or excessive vent noise."
                  "".format(driver.manufacturer, driver.model,
                            self.current_box.fb, Sp_min))
         self.minimum_vent_area.setText(label)

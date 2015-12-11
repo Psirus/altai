@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 from driver import Driver
@@ -31,7 +32,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
         self.table_widget = QtGui.QTableWidget(self)
         self.table_widget.setColumnCount(7)
         self.table_widget.setHorizontalHeaderLabels(
-            ["Manufacturer", "Model", "Fs [Hz]", "Vas [m³]", "Sd [m²]", "Qts",
+            ["Manufacturer", "Model", "Fs [Hz]", u"Vas [m³]", u"Sd [m²]", "Qts",
              "xmax [mm]"])
 
         for driver in driver_db:
