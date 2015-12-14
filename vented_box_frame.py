@@ -16,7 +16,29 @@ from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
 
 def get_response(driver, box):
-    """ Calculate system response of box and driver combination """
+    """ Calculate system response of box and driver combination 
+    
+    Calculate system response of a certain driver in a vented box, according
+    to Thiele[1]_.
+
+    Parameters
+    ----------
+    driver : Driver
+        Driver to be used
+    box : VentedBox
+        Box to be used
+
+    Returns
+    -------
+    w : ndarray
+        the angular frequencies at which h was computed
+    h : ndarray
+        the frequency response
+
+    References
+    ----------
+    .. [1] A. N. Thiele, "Loudspeaker in Vented Boxes: Part I" 
+    """
 
     a = np.zeros(5)
     b = np.zeros(5)
