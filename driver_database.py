@@ -171,7 +171,8 @@ class DriverDatabaseFrame(QtGui.QWidget):
 
         driver_db.append(new_driver)
         with open(local_db_fname, 'wb') as f:
-            pickle.dump(driver_db, f)
+            # for python 2 compability
+            pickle.dump(driver_db, f, protocol=2)
         self.add_driver_entry(new_driver)
 
         if new_driver.manufacturer not in manufacturers:
