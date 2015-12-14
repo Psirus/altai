@@ -1,3 +1,4 @@
+""" Calculate and plot the frequency response of box/driver combinations """
 # Matplotlib setup
 import matplotlib as mpl
 mpl.use('Qt4Agg')
@@ -11,7 +12,7 @@ import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import scipy.signal as signal
 # altay imports
-from driver_database import driver_db, manufacturers
+from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
 
 def get_response(driver, box):
@@ -73,40 +74,15 @@ class VentedBoxFrame(QtGui.QWidget):
         box_fb_spinbox.setValue(self.current_box.fb)
         box_fb_spinbox.valueChanged.connect(self.change_box_fb)
 
-        # Driver selection setup
-        driver_selection = QtGui.QGroupBox("Driver Selection")
-        driver_selection_form = QtGui.QFormLayout(self)
-        driver_selection_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
-
-        driver_manuf_label = QtGui.QLabel(self)
-        driver_manuf_label.setText("Manufacturer")
-        self.driver_manuf_box = QtGui.QComboBox(self)
-        for manufacturer in manufacturers:
-            self.driver_manuf_box.addItem(manufacturer)
-        self.driver_manuf_box.activated.connect(self.set_manufacturer)
-        current_manuf_index = self.driver_manuf_box.currentIndex()
-        self.current_manuf = self.driver_manuf_box.itemText(current_manuf_index)
-
-        driver_model_label = QtGui.QLabel(self)
-        driver_model_label.setText("Model")
-        self.driver_model_box = QtGui.QComboBox(self)
-        self.driver_model_box.currentIndexChanged.connect(self.set_model)
-        self.update_model_box()
-        current_model_index = self.driver_model_box.currentIndex()
-        self.current_model = self.driver_model_box.itemText(current_model_index)
-        for driver in driver_db:
-            if ((self.current_model == driver.model)
-                    and (self.current_manuf == driver.manufacturer)):
-                self.current_driver = driver
-
-        driver_selection_form.addRow(driver_manuf_label, self.driver_manuf_box)
-        driver_selection_form.addRow(driver_model_label, self.driver_model_box)
-        driver_selection.setLayout(driver_selection_form)
+        self.driver_selection = DriverSelectionGroup()
+        self.driver_selection.driver_changed.connect(self.driver_changed)
+        self.current_driver = self.driver_selection.current_driver
+        self.update_response()
 
         # Assemble main view
         hbox = QtGui.QHBoxLayout()
         hbox.addWidget(box_param_group)
-        hbox.addWidget(driver_selection)
+        hbox.addWidget(self.driver_selection)
 
         compare_button = QtGui.QPushButton("Freeze and Compare", self)
         compare_button.clicked.connect(self.add_new_response)
@@ -127,25 +103,9 @@ class VentedBoxFrame(QtGui.QWidget):
         self.current_box.fb = fb
         self.update_response()
 
-    def set_manufacturer(self, index):
-        """ Change manufacturer and update driver models"""
-        self.current_manuf = self.driver_manuf_box.itemText(index)
-        self.update_model_box()
-
-    def update_model_box(self):
-        """ Clear model list and add all models of current manufacturer"""
-        self.driver_model_box.clear()
-        for driver in driver_db:
-            if driver.manufacturer == self.current_manuf:
-                self.driver_model_box.addItem(driver.model)
-
-    def set_model(self, index):
-        """ Change driver and update response plot"""
-        self.current_model = self.driver_model_box.itemText(index)
-        for driver in driver_db:
-            if ((self.current_model == driver.model)
-                    and (self.current_manuf == driver.manufacturer)):
-                self.current_driver = driver
+    def driver_changed(self, driver):
+        """ Update response when selected driver changes """
+        self.current_driver = driver
         self.update_response()
 
     def update_response(self):

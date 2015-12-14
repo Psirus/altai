@@ -26,11 +26,16 @@ class Gui(QtGui.QMainWindow):
         self.tab_bar.addTab("Driver Database")
         self.tab_bar.currentChanged.connect(self.change_main_tab)
 
-        self.main_frames = []
-        self.main_frames.append(VentedBoxFrame())
-        self.main_frames.append(VentDimensionsFrame())
-        self.main_frames.append(DriverDatabaseFrame())
+        vented_box_frame = VentedBoxFrame()
+        vent_dimensions_frame = VentDimensionsFrame()
+        driver_database_frame = DriverDatabaseFrame()
+        driver_database_frame.new_manufacturer_added.connect(
+            vented_box_frame.driver_selection.update_drivers)
+        driver_database_frame.new_manufacturer_added.connect(
+            vent_dimensions_frame.driver_selection.update_drivers)
 
+        self.main_frames = [vented_box_frame, vent_dimensions_frame,
+                            driver_database_frame]
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(self.tab_bar)
         for i, frame in enumerate(self.main_frames):

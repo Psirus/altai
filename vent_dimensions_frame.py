@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+""" Module for calculating the vent dimensions of a given tuning """
 import numpy as np
 import PySide.QtGui as QtGui
 
-from air import rho
+import air
 from vented_box import VentedBox
-from driver_database import driver_db, manufacturers
+from driver_selection_group import DriverSelectionGroup
 
 class VentDimensionsFrame(QtGui.QWidget):
     """ Find vent dimensions for given tuning """
@@ -77,48 +78,23 @@ class VentDimensionsFrame(QtGui.QWidget):
         hbox.addWidget(box_param_group)
         hbox.addWidget(vent_geom_group)
 
-        # Driver selection setup
-        driver_selection = QtGui.QGroupBox("Driver Selection")
-        driver_selection_form = QtGui.QFormLayout(self)
-        driver_selection_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
-
-        driver_manuf_label = QtGui.QLabel(self)
-        driver_manuf_label.setText("Manufacturer")
-        self.driver_manuf_box = QtGui.QComboBox(self)
-        for manufacturer in manufacturers:
-            self.driver_manuf_box.addItem(manufacturer)
-        self.driver_manuf_box.activated.connect(self.set_manufacturer)
-        current_manuf_index = self.driver_manuf_box.currentIndex()
-        self.current_manuf = self.driver_manuf_box.itemText(current_manuf_index)
-
         self.minimum_vent_area = QtGui.QLabel(self)
-        driver_model_label = QtGui.QLabel(self)
-        driver_model_label.setText("Model")
-        self.driver_model_box = QtGui.QComboBox(self)
-        self.driver_model_box.currentIndexChanged.connect(self.set_model)
-        self.update_model_box()
-        current_model_index = self.driver_model_box.currentIndex()
-        self.current_model = self.driver_model_box.itemText(current_model_index)
-        for driver in driver_db:
-            if ((self.current_model == driver.model)
-                    and (self.current_manuf == driver.manufacturer)):
-                self.current_driver = driver
-        self.update_model_vent_area()
 
-        driver_selection_form.addRow(driver_manuf_label, self.driver_manuf_box)
-        driver_selection_form.addRow(driver_model_label, self.driver_model_box)
-        driver_selection_form.addRow(self.minimum_vent_area)
-        driver_selection.setLayout(driver_selection_form)
+        # Driver selection setup
+        self.driver_selection = DriverSelectionGroup()
+        self.driver_selection.driver_changed.connect(self.update_model_vent_area)
+        self.update_model_vent_area(self.driver_selection.current_driver)
 
         vbox = QtGui.QVBoxLayout()
         vbox.addLayout(hbox)
-        vbox.addWidget(driver_selection)
+        vbox.addWidget(self.driver_selection)
+        vbox.addWidget(self.minimum_vent_area)
         self.setLayout(vbox)
 
     def find_radius(self, length):
         """ Find required vent radius for achieving given tuning """
         Mav = 1 / ((2*np.pi*self.current_box.fb)**2 * self.current_box.Cab)
-        c = [-length*rho, -1.7*rho, Mav*np.pi]
+        c = [-length*air.RHO, -1.7*air.RHO, Mav*np.pi]
         roots = np.polynomial.polynomial.polyroots(c)
         radius = roots[roots > 0][0]
         return radius
@@ -126,7 +102,7 @@ class VentDimensionsFrame(QtGui.QWidget):
     def find_length(self, radius):
         """ Find required vent length for achieving given tuning """
         Mav = 1 / ((2*np.pi*self.current_box.fb)**2 * self.current_box.Cab)
-        length = (np.pi*radius**2*Mav - 1.7*radius*rho)/rho
+        length = (np.pi*radius**2*Mav - 1.7*radius*air.RHO)/air.RHO
         return length
 
     def radius_changed(self, radius):
@@ -157,32 +133,11 @@ class VentDimensionsFrame(QtGui.QWidget):
         radius = self.vent_radius_spinbox.value()
         length = self.find_length(1e-3*radius)
         self.vent_length_spinbox.setValue(1e3*length)
-        self.update_model_vent_area()
+        self.update_model_vent_area(self.current_driver)
 
-    def set_manufacturer(self, index):
-        """ Change manufacturer and update driver models"""
-        self.current_manuf = self.driver_manuf_box.itemText(index)
-        self.update_model_box()
-
-    def set_model(self, index):
-        """ Change driver and update response plot"""
-        self.current_model = self.driver_model_box.itemText(index)
-        for driver in driver_db:
-            if ((self.current_model == driver.model)
-                    and (self.current_manuf == driver.manufacturer)):
-                self.current_driver = driver
-        self.update_model_vent_area()
-
-    def update_model_box(self):
-        """ Clear model list and add all models of current manufacturer"""
-        self.driver_model_box.clear()
-        for driver in driver_db:
-            if driver.manufacturer == self.current_manuf:
-                self.driver_model_box.addItem(driver.model)
-
-    def update_model_vent_area(self):
+    def update_model_vent_area(self, driver):
         """ Update the minimum vent area required """
-        driver = self.current_driver
+        self.current_driver = driver
         Vd = driver.Sd * driver.xmax
         Sp_min = 1e6*0.8*self.current_box.fb*Vd
         label = (u"With the {0} {1},\n"

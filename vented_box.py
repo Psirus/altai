@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+""" Vented box enclosure """
 import numpy as np
-from air import rho, c
+import air
 
 class VentedBox(object):
     """ Model a vented box loudspeaker enclosure """
 
     def __init__(self, Vab, fb):
         self._Vab = Vab
-        self.Cab = Vab / (rho*c**2)
+        self.Cab = Vab / (air.RHO*air.C**2)
         self._fb = fb
         self.wb = 2*np.pi*fb
         self.Tb = 1 / self.wb
@@ -20,7 +21,7 @@ class VentedBox(object):
     @Vab.setter
     def Vab(self, Vab):
         self._Vab = Vab
-        self.Cab = Vab / (rho*c**2)
+        self.Cab = Vab / (air.RHO*air.C**2)
 
     @property
     def fb(self):
