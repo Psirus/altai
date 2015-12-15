@@ -8,10 +8,8 @@ responses, etc.
 Documentation
 -------------
 
-[![Documentation Status](https://readthedocs.org/projects/altay/badge/?version=latest)](http://altay.readthedocs.org/en/latest/?badge=latest)
-
-The [documentation](http://altay.readthedocs.org/en/latest/) can be found at 
-[read the docs](http://altay.readthedocs.org/en/latest/).
+You can build the documentation locally by running `make html` in the `docs`
+directory. Then, point your browser to `docs/.build/html/index.html`.
 
 Dependencies
 ------------
