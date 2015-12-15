@@ -8,6 +8,8 @@ responses, etc.
 Documentation
 -------------
 
+[![Documentation Status](https://readthedocs.org/projects/altay/badge/?version=latest)](http://altay.readthedocs.org/en/latest/?badge=latest)
+
 The [documentation](http://altay.readthedocs.org/en/latest/) can be found at 
 [read the docs](http://altay.readthedocs.org/en/latest/).
 
