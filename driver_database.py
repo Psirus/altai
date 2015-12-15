@@ -10,29 +10,47 @@ import PySide.QtCore as QtCore
 
 from driver import Driver
 
-# generate altay config dir if if does not exist;
-# under Unix '~/.local/share/data/altay'
-data_dir = QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DataLocation)
-altay_config_dir = os.path.join(data_dir[:-1], 'altay')
-try:
-    os.makedirs(altay_config_dir)
-except OSError:
-    if not os.path.isdir(altay_config_dir):
-        raise
+class DriverDB(list):
 
-# check if local driver database exists; if not copy it from altay source dir
-local_db_fname = os.path.join(altay_config_dir, 'driver_db.ddb')
-if not os.path.isfile(local_db_fname):
-    altay_bin_dir = os.path.dirname(sys.argv[0])
-    included_db_fname = os.path.join(altay_bin_dir, 'driver_db.ddb')
-    shutil.copy(included_db_fname, local_db_fname)
+    def __init__(self):
+        list.__init__(self)
+        # generate altay config dir if if does not exist;
+        # under Unix '~/.local/share/data/altay'
+        data_dir = QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DataLocation)
+        altay_config_dir = os.path.join(data_dir[:-1], 'altay')
+        try:
+            os.makedirs(altay_config_dir)
+        except OSError:
+            if not os.path.isdir(altay_config_dir):
+                raise
 
-with open(local_db_fname, 'rb') as f:
-    driver_db = pickle.load(f)
+        # check if local driver database exists; if not copy it from altay source dir
+        self.local_db_fname = os.path.join(altay_config_dir, 'driver_db.ddb')
+        if not os.path.isfile(self.local_db_fname):
+            altay_bin_dir = os.path.dirname(sys.argv[0])
+            included_db_fname = os.path.join(altay_bin_dir, 'driver_db.ddb')
+            shutil.copy(included_db_fname, self.local_db_fname)
 
-manufacturers = set()
-for driver in driver_db:
-    manufacturers.add(driver.manufacturer)
+        with open(self.local_db_fname, 'rb') as f:
+            driver_list = pickle.load(f)
+
+        self.manufacturers = set()
+        for driver in driver_list:
+            self.append(driver)
+            self.manufacturers.add(driver.manufacturer)
+
+    def write_to_disk(self):
+        driver_list = []
+        for driver in self:
+            driver_list.append(driver)
+        with open(self.local_db_fname, 'wb') as f:
+            pickle.dump(driver_list, f)
+
+# can't import driver_db when building the documentation
+if sys.argv[0].find('sphinx-build') != -1:
+    driver_db = ""
+else:
+    driver_db = DriverDB()
 
 class DriverDatabaseFrame(QtGui.QWidget):
     """ Display, sort, filter, etc the database of availabe drive units """
@@ -170,12 +188,10 @@ class DriverDatabaseFrame(QtGui.QWidget):
         new_driver.xmax = self.xmax_box.value()/1e3 #mm to m
 
         driver_db.append(new_driver)
-        with open(local_db_fname, 'wb') as f:
-            # for python 2 compability
-            pickle.dump(driver_db, f, protocol=2)
+        driver_db.write_to_disk()
         self.add_driver_entry(new_driver)
 
-        if new_driver.manufacturer not in manufacturers:
-            manufacturers.add(new_driver.manufacturer)
-            self.new_manufacturer_added.emit(manufacturers)
+        if new_driver.manufacturer not in driver_db.manufacturers:
+            driver_db.manufacturers.add(new_driver.manufacturer)
+            self.new_manufacturer_added.emit(driver_db.manufacturers)
         self.add_driver_dialog.accept()

@@ -2,7 +2,7 @@
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 from driver import Driver
-from driver_database import driver_db, manufacturers
+from driver_database import driver_db
 
 class DriverSelectionGroup(QtGui.QGroupBox):
     """ Group from which to select manufacturer and model """
@@ -25,7 +25,7 @@ class DriverSelectionGroup(QtGui.QGroupBox):
         self.driver_model_box = QtGui.QComboBox(self)
         self.driver_model_box.activated.connect(self.change_driver)
 
-        for manufacturer in manufacturers:
+        for manufacturer in driver_db.manufacturers:
             self.driver_manuf_box.addItem(manufacturer)
         self.current_manuf = self.driver_manuf_box.currentText()
         for driver in driver_db:

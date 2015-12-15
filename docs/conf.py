@@ -17,6 +17,18 @@ import sys
 import os
 import shlex
 import imp
+from unittest.mock import MagicMock
+
+# Mock the modules so that
+# a) you don't need them to build the documentation, and therefore
+# b) the docs can be build on RTDs
+MOCK_MODULES = ['PySide', 'PySide.QtGui', 'PySide.QtCore', 'scipy',
+    'scipy.signal', 'matplotlib', 'matplotlib.backends',
+    'matplotlib.backends.backend_qt4agg', 'matplotlib.figure', 'numpy',
+    'numpy.ma']
+
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = MagicMock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -24,7 +36,6 @@ import imp
 sys.path.insert(0, os.path.abspath('..'))
 # Import altay main file explicitly, because it does not have .py ending
 altay = imp.load_source('altay', '../altay')
-
 
 # -- General configuration ------------------------------------------------
 
