@@ -22,8 +22,7 @@ from unittest.mock import MagicMock
 # Mock the modules so that
 # a) you don't need them to build the documentation, and therefore
 # b) the docs can be build on RTDs
-MOCK_MODULES = ['PySide', 'PySide.QtGui', 'PySide.QtCore', 'scipy',
-    'scipy.signal', 'matplotlib', 'matplotlib.backends',
+MOCK_MODULES = ['scipy', 'scipy.signal', 'matplotlib', 'matplotlib.backends',
     'matplotlib.backends.backend_qt4agg', 'matplotlib.figure', 'numpy',
     'numpy.ma']
 

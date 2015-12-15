@@ -46,11 +46,7 @@ class DriverDB(list):
         with open(self.local_db_fname, 'wb') as f:
             pickle.dump(driver_list, f)
 
-# can't import driver_db when building the documentation
-if sys.argv[0].find('sphinx-build') != -1:
-    driver_db = ""
-else:
-    driver_db = DriverDB()
+driver_db = DriverDB()
 
 class DriverDatabaseFrame(QtGui.QWidget):
     """ Display, sort, filter, etc the database of availabe drive units """
