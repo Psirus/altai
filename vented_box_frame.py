@@ -19,7 +19,7 @@ def get_response(driver, box):
     """ Calculate system response of box and driver combination 
     
     Calculate system response of a certain driver in a vented box, according
-    to Thiele[1]_.
+    to Thiele [1]_.
 
     Parameters
     ----------
@@ -56,7 +56,15 @@ def get_response(driver, box):
     return (w, h)
 
 class VentedBoxFrame(QtGui.QWidget):
-    """ Predict frequency response of vented boxes according to Thiele & Small """
+    """ Predict frequency response of vented boxes according to Thiele & Small 
+    
+    This is one of the main tabs of the application atm. You can choose your
+    box size and tuning, select a driver and it will plot the frequency 
+    response of this combination. 
+
+    The button "Freeze and Compare" keeps the current response and adds a new
+    one, whose parameters can be modified.
+    """
 
     def __init__(self):
         QtGui.QWidget.__init__(self)
@@ -146,6 +154,7 @@ class VentedBoxFrame(QtGui.QWidget):
         self.canvas.draw()
 
     def add_new_response(self):
+        """ Add an additional response to the plot """
         w, h = get_response(self.current_driver, self.current_box)
         self.amplitude_line, = self.amplitude_axes.semilogx(w/(2*np.pi), 20*np.log10(abs(h)))
         manufacturer = self.current_driver.manufacturer
@@ -158,7 +167,6 @@ class VentedBoxFrame(QtGui.QWidget):
         self.amplitude_axes.legend(loc='lower right')
         self.set_plot_options()
         self.canvas.draw()
-
 
     def set_plot_options(self):
         """ Set the appearance of the plot """

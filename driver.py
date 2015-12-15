@@ -22,7 +22,7 @@ class Driver(object):
         self.ws = 0.0
         #: Acoustic compliance of drivers suspension :math:`C_{as}`
         #:
-        #: .. note: Do not set this directly, use :meth:`Vas`
+        #: .. note:: Do not set this directly, use :meth:`Vas`
         self.Cas = 0.0
         #: Time constant of the driver :math:`T_s = \frac{1}{\omega_s}`, not to
         #: be confused with a period :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`

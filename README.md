@@ -5,6 +5,12 @@ Altay
 you can obtain design speakers, find the optimum driver, predict frequency
 responses, etc.
 
+Documentation
+-------------
+
+The [documentation](http://altay.readthedocs.org/en/latest/) can be found at 
+[read the docs](http://altay.readthedocs.org/en/latest/).
+
 Dependencies
 ------------
 

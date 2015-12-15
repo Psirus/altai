@@ -87,7 +87,7 @@ class Gui(QtGui.QMainWindow):
         fname, _ = QtGui.QFileDialog.getSaveFileName(
             self, "Save Response as", home,
             "PDF, PNG and SVG (*.pdf *.png *.svg)")
-        self.vented_box_frame.fig.savefig(fname)
+        self.main_frames[0].fig.savefig(fname)
 
     def create_about_window(self):
         """ Creates the about window for Altay. """
