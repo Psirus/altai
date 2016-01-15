@@ -4,6 +4,7 @@ import PySide.QtGui as QtGui
 from driver import Driver
 from driver_database import driver_db
 
+
 class DriverSelectionGroup(QtGui.QGroupBox):
     """ Group from which to select manufacturer and model """
 
@@ -13,7 +14,8 @@ class DriverSelectionGroup(QtGui.QGroupBox):
         # Driver selection setup
         QtGui.QGroupBox.__init__(self, "Driver Selection")
         driver_selection_form = QtGui.QFormLayout(self)
-        driver_selection_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
+        driver_selection_form.setFieldGrowthPolicy(
+            QtGui.QFormLayout.FieldsStayAtSizeHint)
 
         driver_manuf_label = QtGui.QLabel(self)
         driver_manuf_label.setText("Manufacturer")

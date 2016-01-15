@@ -10,13 +10,15 @@ import PySide.QtCore as QtCore
 
 from driver import Driver
 
+
 class DriverDB(list):
 
     def __init__(self):
         list.__init__(self)
         # generate altay config dir if if does not exist;
         # under Unix '~/.local/share/data/altay'
-        data_dir = QtGui.QDesktopServices.storageLocation(QtGui.QDesktopServices.DataLocation)
+        data_dir = QtGui.QDesktopServices.storageLocation(
+            QtGui.QDesktopServices.DataLocation)
         altay_config_dir = os.path.join(data_dir[:-1], 'altay')
         try:
             os.makedirs(altay_config_dir)
@@ -24,7 +26,8 @@ class DriverDB(list):
             if not os.path.isdir(altay_config_dir):
                 raise
 
-        # check if local driver database exists; if not copy it from altay source dir
+        # check if local driver database exists; if not copy it from altay
+        # source dir
         self.local_db_fname = os.path.join(altay_config_dir, 'driver_db.ddb')
         if not os.path.isfile(self.local_db_fname):
             altay_bin_dir = os.path.dirname(sys.argv[0])
@@ -48,6 +51,7 @@ class DriverDB(list):
 
 driver_db = DriverDB()
 
+
 class DriverDatabaseFrame(QtGui.QWidget):
     """ Display, sort, filter, etc the database of availabe drive units """
 
@@ -59,8 +63,8 @@ class DriverDatabaseFrame(QtGui.QWidget):
         self.table_widget = QtGui.QTableWidget(self)
         self.table_widget.setColumnCount(7)
         self.table_widget.setHorizontalHeaderLabels(
-            ["Manufacturer", "Model", "Fs [Hz]", u"Vas [m³]", u"Sd [m²]", "Qts",
-             "xmax [mm]"])
+            ["Manufacturer", "Model", "Fs [Hz]", u"Vas [m³]", u"Sd [m²]",
+             "Qts", "xmax [mm]"])
 
         # populate table
         for driver in driver_db:
@@ -178,10 +182,10 @@ class DriverDatabaseFrame(QtGui.QWidget):
     def write_driver_to_db(self):
         new_driver = Driver(self.manuf_line.text(), self.model_line.text())
         new_driver.fs = self.fs_box.value()
-        new_driver.Vas = self.Vas_box.value()/1e3 # l to m³
+        new_driver.Vas = self.Vas_box.value()/1e3  # l to m³
         new_driver.Qts = self.Qts_box.value()
-        new_driver.Sd = self.Sd_box.value()/1e4 #cm² to m²
-        new_driver.xmax = self.xmax_box.value()/1e3 #mm to m
+        new_driver.Sd = self.Sd_box.value()/1e4  # cm² to m²
+        new_driver.xmax = self.xmax_box.value()/1e3  # mm to m
 
         driver_db.append(new_driver)
         driver_db.write_to_disk()

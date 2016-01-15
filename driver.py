@@ -2,6 +2,7 @@
 import numpy as np
 import air
 
+
 class Driver(object):
     """ Class to model drivers """
 
@@ -25,7 +26,8 @@ class Driver(object):
         #: .. note:: Do not set this directly, use :meth:`Vas`
         self.Cas = 0.0
         #: Time constant of the driver :math:`T_s = \frac{1}{\omega_s}`, not to
-        #: be confused with a period :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`
+        #: be confused with a period
+        #: :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`
         #:
         #: .. note:: Do not set this directly, use :meth:`fs`
         self.Ts = 0.0
@@ -35,7 +37,7 @@ class Driver(object):
     @property
     def fs(self):
         """ Driver resonance frequency in Hz
-        
+
         The resonance frequency of the driver, in Hz. Setting this attributes
         also sets :attr:`Ts` and :attr:`ws`.
         """
@@ -51,7 +53,7 @@ class Driver(object):
     @property
     def Vas(self):
         r""" Driver equivalent compliance volume
-        
+
         The equivalent compliance volume, i.e. that volume of air that has the
         same compliance as the drivers suspension
         :math:`V_{as} = \rho c^2 C_{as}`. Setting this attribute also sets

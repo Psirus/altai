@@ -3,10 +3,11 @@
 import numpy as np
 import air
 
+
 class VentedBox(object):
     """ Model a vented box loudspeaker enclosure """
 
-    def __init__(self, Vab, fb):
+    def __init__(self, Vab, fb, Ql):
         self._Vab = Vab
         #: Acoustic compliance of box :math:`C_{ab}`
         #:
@@ -18,15 +19,18 @@ class VentedBox(object):
         #: .. note:: Do not set this directly, use :meth:`fb`
         self.wb = 2*np.pi*fb
         #: Time constant of the box :math:`T_b = \frac{1}{\omega_b}`; not to
-        #: be confused with a period :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`
+        #: be confused with a period
+        #: :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`
         #:
         #: .. note:: Do not set this directly, use :meth:`fb`
         self.Tb = 1 / self.wb
+        #: Enclosure leakage losses
+        self.Ql = Ql
 
     @property
     def Vab(self):
         """ Box Volume in m³
-        
+
         The box volume in m³. Setting this attribute also sets :attr:`Cab`.
         """
         return self._Vab
@@ -40,7 +44,7 @@ class VentedBox(object):
     @property
     def fb(self):
         """ Box Tuning Frequency in Hz
-        
+
         The tuning frequency of the box. Setting this attribute also sets
         :attr:`wb` and :attr:`Tb`.
         """

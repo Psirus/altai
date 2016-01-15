@@ -4,7 +4,7 @@ import matplotlib as mpl
 mpl.use('Qt4Agg')
 mpl.rcParams['backend.qt4'] = 'PySide'
 mpl.rcParams['lines.linewidth'] = 2.0
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 import matplotlib.figure as figure
 # system imports
 import numpy as np
@@ -15,11 +15,12 @@ import scipy.signal as signal
 from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
 
+
 def get_response(driver, box):
-    """ Calculate system response of box and driver combination 
-    
+    """ Calculate system response of box and driver combination
+
     Calculate system response of a certain driver in a vented box, according
-    to Thiele [1]_.
+    to Small [1]_.
 
     Parameters
     ----------
@@ -37,30 +38,41 @@ def get_response(driver, box):
 
     References
     ----------
-    .. [1] A. N. Thiele, "Loudspeaker in Vented Boxes: Part I" 
+    .. [1] Richard H. Small, "Vented-Box Loudspeaker Systems -- Part I"
     """
 
     a = np.zeros(5)
     b = np.zeros(5)
-    b[0] = 1.0
 
     # Response parameters
-    a[0] = 1.0
-    a[1] = 1/(driver.Qts * driver.Ts)
-    a[2] = 1/driver.Ts**2 + 1/box.Tb**2 + driver.Cas/(box.Cab*driver.Ts**2)
-    a[3] = 1/(box.Tb**2*driver.Ts*driver.Qts)
-    a[4] = 1/(driver.Ts**2*box.Tb**2)
+    T_0 = np.sqrt(driver.Ts * box.Tb)
+    # tuning ratio
+    h = driver.Ts / box.Tb
+    # compliance ratio
+    c = driver.Cas / box.Cab
 
-    frequencies = np.logspace(np.log10(2*np.pi*20), np.log10(2*np.pi*300), num=100)
+    b[0] = T_0**4
+
+    a[0] = T_0**4
+    a[1] = T_0**3 * (box.Ql + h*driver.Qts)/(np.sqrt(h) * box.Ql * driver.Qts)
+    a[2] = T_0**2 * (h + (c + 1 + h**2) * driver.Qts * box.Ql) / (
+        h * driver.Qts * box.Ql)
+    a[3] = T_0 * (h*box.Ql + driver.Qts) / (np.sqrt(h) * driver.Qts * box.Ql)
+    a[4] = 1.0
+
+    start = np.log10(2*np.pi*20.0)
+    stop = np.log10(2*np.pi*300.0)
+    frequencies = np.logspace(start, stop, num=100)
     w, h = signal.freqs(b, a, worN=frequencies)
     return (w, h)
 
+
 class VentedBoxFrame(QtGui.QWidget):
-    """ Predict frequency response of vented boxes according to Thiele & Small 
-    
+    """ Predict frequency response of vented boxes according to Thiele & Small
+
     This is one of the main tabs of the application atm. You can choose your
-    box size and tuning, select a driver and it will plot the frequency 
-    response of this combination. 
+    box size and tuning, select a driver and it will plot the frequency
+    response of this combination.
 
     The button "Freeze and Compare" keeps the current response and adds a new
     one, whose parameters can be modified.
@@ -73,7 +85,7 @@ class VentedBoxFrame(QtGui.QWidget):
         self.fig = figure.Figure((5.0, 4.0))
         bg_color = self.palette().color(QtGui.QPalette.Window).getRgbF()
         self.fig.set_facecolor(bg_color)
-        self.canvas = FigureCanvas(self.fig)
+        self.canvas = FigureCanvasQTAgg(self.fig)
         self.amplitude_axes = self.fig.add_subplot(111)
         self.amplitude_line, = self.amplitude_axes.semilogx(100.0, 0.0)
         self.set_plot_options()
@@ -82,7 +94,8 @@ class VentedBoxFrame(QtGui.QWidget):
         # Box parameter setup
         box_param_group = QtGui.QGroupBox("Box Parameters")
         box_param_form = QtGui.QFormLayout(self)
-        box_param_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
+        box_param_form.setFieldGrowthPolicy(
+            QtGui.QFormLayout.FieldsStayAtSizeHint)
         box_volume_label = QtGui.QLabel(self)
         box_volume_label.setText("Box Volume")
         box_volume_spinbox = QtGui.QDoubleSpinBox(self)
@@ -93,16 +106,23 @@ class VentedBoxFrame(QtGui.QWidget):
         box_fb_spinbox = QtGui.QDoubleSpinBox(self)
         box_fb_spinbox.setSuffix(" Hz")
         box_fb_spinbox.setRange(20.0, 200.0)
+        box_ql_label = QtGui.QLabel(self)
+        box_ql_label.setText("Box Leakage Losses Ql")
+        box_ql_spinbox = QtGui.QDoubleSpinBox(self)
+        box_ql_spinbox.setRange(2.0, 100.0)
         box_param_form.addRow(box_volume_label, box_volume_spinbox)
         box_param_form.addRow(box_fb_label, box_fb_spinbox)
+        box_param_form.addRow(box_ql_label, box_ql_spinbox)
         box_param_group.setLayout(box_param_form)
 
-        qb3_box = VentedBox(Vab=0.022, fb=55.3)
+        qb3_box = VentedBox(Vab=0.022, fb=55.3, Ql=20.0)
         self.current_box = qb3_box
         box_volume_spinbox.setValue(1e3*self.current_box.Vab)
         box_volume_spinbox.valueChanged.connect(self.change_box_size)
         box_fb_spinbox.setValue(self.current_box.fb)
         box_fb_spinbox.valueChanged.connect(self.change_box_fb)
+        box_ql_spinbox.setValue(self.current_box.Ql)
+        box_ql_spinbox.valueChanged.connect(self.change_box_ql)
 
         self.driver_selection = DriverSelectionGroup()
         self.driver_selection.driver_changed.connect(self.driver_changed)
@@ -133,6 +153,11 @@ class VentedBoxFrame(QtGui.QWidget):
         self.current_box.fb = fb
         self.update_response()
 
+    def change_box_ql(self, Ql):
+        """ Change box losses and update response plot """
+        self.current_box.Ql = Ql
+        self.update_response()
+
     def driver_changed(self, driver):
         """ Update response when selected driver changes """
         self.current_driver = driver
@@ -156,7 +181,8 @@ class VentedBoxFrame(QtGui.QWidget):
     def add_new_response(self):
         """ Add an additional response to the plot """
         w, h = get_response(self.current_driver, self.current_box)
-        self.amplitude_line, = self.amplitude_axes.semilogx(w/(2*np.pi), 20*np.log10(abs(h)))
+        self.amplitude_line, = self.amplitude_axes.semilogx(
+            w/(2*np.pi), 20*np.log10(abs(h)))
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
         box_volume = 1e3*self.current_box.Vab
