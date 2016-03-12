@@ -15,23 +15,23 @@ class DriverDB(list):
 
     def __init__(self):
         list.__init__(self)
-        # generate altay config dir if if does not exist;
-        # under Unix '~/.local/share/data/altay'
+        # generate altai config dir if if does not exist;
+        # under Unix '~/.local/share/data/altai'
         data_dir = QtGui.QDesktopServices.storageLocation(
             QtGui.QDesktopServices.DataLocation)
-        altay_config_dir = os.path.join(data_dir[:-1], 'altay')
+        altai_config_dir = os.path.join(data_dir[:-1], 'altai')
         try:
-            os.makedirs(altay_config_dir)
+            os.makedirs(altai_config_dir)
         except OSError:
-            if not os.path.isdir(altay_config_dir):
+            if not os.path.isdir(altai_config_dir):
                 raise
 
-        # check if local driver database exists; if not copy it from altay
+        # check if local driver database exists; if not copy it from altai
         # source dir
-        self.local_db_fname = os.path.join(altay_config_dir, 'driver_db.ddb')
+        self.local_db_fname = os.path.join(altai_config_dir, 'driver_db.ddb')
         if not os.path.isfile(self.local_db_fname):
-            altay_bin_dir = os.path.dirname(sys.argv[0])
-            included_db_fname = os.path.join(altay_bin_dir, 'driver_db.ddb')
+            altai_bin_dir = os.path.dirname(sys.argv[0])
+            included_db_fname = os.path.join(altai_bin_dir, 'driver_db.ddb')
             shutil.copy(included_db_fname, self.local_db_fname)
 
         with open(self.local_db_fname, 'rb') as f:
@@ -61,10 +61,10 @@ class DriverDatabaseFrame(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
 
         self.table_widget = QtGui.QTableWidget(self)
-        self.table_widget.setColumnCount(7)
-        self.table_widget.setHorizontalHeaderLabels(
-            ["Manufacturer", "Model", "Fs [Hz]", u"Vas [m³]", u"Sd [m²]",
-             "Qts", "xmax [mm]"])
+        labels = ["Manufacturer", "Model", "d [in]", "Fs [Hz]", u"Vas [m³]",
+                  u"Sd [m²]", "Qts", "xmax [mm]", "m [kg]", "P (AES) [W]"]
+        self.table_widget.setColumnCount(len(labels))
+        self.table_widget.setHorizontalHeaderLabels(labels)
 
         # populate table
         for driver in driver_db:
@@ -87,11 +87,14 @@ class DriverDatabaseFrame(QtGui.QWidget):
         items = []
         items.append(QtGui.QTableWidgetItem(driver.manufacturer))
         items.append(QtGui.QTableWidgetItem(driver.model))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.diameter)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.fs)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Vas)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Sd)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Qts)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(1e3*driver.xmax)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.weight)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.power)))
 
         for i, item in enumerate(items):
             item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
@@ -114,8 +117,29 @@ class DriverDatabaseFrame(QtGui.QWidget):
         model_label.setText("Model")
         self.model_line = QtGui.QLineEdit()
 
+        diameter_label = QtGui.QLabel()
+        diameter_label.setText("Diameter")
+        self.diameter_box = QtGui.QDoubleSpinBox()
+        self.diameter_box.setSuffix(' "')
+        self.diameter_box.setRange(0.5, 40.0)
+
+        weight_label = QtGui.QLabel()
+        weight_label.setText("Net Weight")
+        self.weight_box = QtGui.QDoubleSpinBox()
+        self.weight_box.setSuffix(" kg")
+        self.weight_box.setRange(0.1, 40.0)
+
+        power_label = QtGui.QLabel()
+        power_label.setText("AES Power Handling")
+        self.power_box = QtGui.QDoubleSpinBox()
+        self.power_box.setSuffix(" W")
+        self.power_box.setRange(1.0, 4000.0)
+
         info_form.addRow(manuf_label, self.manuf_line)
         info_form.addRow(model_label, self.model_line)
+        info_form.addRow(diameter_label, self.diameter_box)
+        info_form.addRow(weight_label, self.weight_box)
+        info_form.addRow(power_label, self.power_box)
         general_info.setLayout(info_form)
 
         # Thiele/Small parameters
@@ -181,6 +205,9 @@ class DriverDatabaseFrame(QtGui.QWidget):
 
     def write_driver_to_db(self):
         new_driver = Driver(self.manuf_line.text(), self.model_line.text())
+        new_driver.diameter = self.diameter_box.value()
+        new_driver.power = self.power_box.value()
+        new_driver.weight = self.weight_box.value()
         new_driver.fs = self.fs_box.value()
         new_driver.Vas = self.Vas_box.value()/1e3  # l to m³
         new_driver.Qts = self.Qts_box.value()

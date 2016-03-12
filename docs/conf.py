@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Altay documentation build configuration file, created by
+# Altai documentation build configuration file, created by
 # sphinx-quickstart on Mon Dec 14 18:09:23 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -22,8 +22,8 @@ import imp
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
-# Import altay main file explicitly, because it does not have .py ending
-altay = imp.load_source('altay', '../altay')
+# Import altai main file explicitly, because it does not have .py ending
+altai = imp.load_source('altai', '../altai')
 
 # -- General configuration ------------------------------------------------
 
@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Altay'
+project = 'Altai'
 copyright = '2015, Christoph Pohl'
 author = 'Christoph Pohl'
 
@@ -208,7 +208,7 @@ html_static_path = ['.static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Altaydoc'
+htmlhelp_basename = 'Altaidoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -230,7 +230,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'Altay.tex', 'Altay Documentation',
+  (master_doc, 'Altai.tex', 'Altai Documentation',
    'Christoph Pohl', 'manual'),
 ]
 
@@ -260,7 +260,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'altay', 'Altay Documentation',
+    (master_doc, 'altai', 'Altai Documentation',
      [author], 1)
 ]
 
@@ -274,8 +274,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'Altay', 'Altay Documentation',
-   author, 'Altay', 'One line description of project.',
+  (master_doc, 'Altai', 'Altai Documentation',
+   author, 'Altai', 'One line description of project.',
    'Miscellaneous'),
 ]
 

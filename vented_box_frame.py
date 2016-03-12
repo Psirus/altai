@@ -11,7 +11,7 @@ import numpy as np
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import scipy.signal as signal
-# altay imports
+# altai imports
 from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
 

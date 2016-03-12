@@ -1,14 +1,14 @@
-Documentation of Modules in Altay
+Documentation of Modules in Altai
 =================================
 
-This part documents the source code of Altay. This can be helpful if you want
-to modify Altay, or if you're interested in the methods used to compute the
+This part documents the source code of Altai. This can be helpful if you want
+to modify Altai, or if you're interested in the methods used to compute the
 results given.
 
-Altay
+Altai
 -----
 
-.. automodule:: altay
+.. automodule:: altai
    :members:
 
 Air

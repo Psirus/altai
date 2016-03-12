@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Main file of Altay. Execute it to use the application. """
+""" Main file of Altai. Execute it to use the application. """
 # System imports
 import sys
 from os.path import expanduser
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
-# Altay imports
+# Altai imports
 from vented_box_frame import VentedBoxFrame
 from vent_dimensions_frame import VentDimensionsFrame
 from driver_database import DriverDatabaseFrame
@@ -16,7 +16,7 @@ class Gui(QtGui.QMainWindow):
 
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.setWindowTitle("Altay")
+        self.setWindowTitle("Altai")
 
         self.create_menu()
 
@@ -90,24 +90,24 @@ class Gui(QtGui.QMainWindow):
         self.main_frames[0].fig.savefig(fname)
 
     def create_about_window(self):
-        """ Creates the about window for Altay. """
+        """ Creates the about window for Altai. """
 
-        about = ("Altay is a cross-platform application for simulating audio "
+        about = ("Altai is a cross-platform application for simulating audio "
                  "systems. With it, you can design speakers, find the optimum "
                  "driver, predict the frequency response, etc. It is still in "
                  "a very early stage of development. You can follow its "
-                 "progress on github: <a href='http://github.com/Psirus/altay'>"
-                 "Altay on GitHub</a>. Please report any issues and feature "
+                 "progress on github: <a href='http://github.com/Psirus/altai'>"
+                 "Altai on GitHub</a>. Please report any issues and feature "
                  "ideas you may have.")
 
         reply = QtGui.QMessageBox(self)
-        reply.setWindowTitle("About Altay")
+        reply.setWindowTitle("About Altai")
         reply.setTextFormat(QtCore.Qt.TextFormat.RichText)
         reply.setText(about)
         reply.exec_()
 
 def main():
-    """ Main function; acts as entry point for Altay. """
+    """ Main function; acts as entry point for Altai. """
     app = QtGui.QApplication(sys.argv)
     gui = Gui()
     gui.show()

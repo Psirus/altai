@@ -11,6 +11,12 @@ class Driver(object):
         self.manufacturer = manufacturer
         #: Model Name
         self.model = model
+        #: Driver Diameter, in inches
+        self.diameter = 0.0
+        #: Driver Net Weight, in kg
+        self.weight = 0.0
+        #: AES Power Handling, in W
+        self.power = 0.0
         #: Total Q of driver
         self.Qts = 0.0
         #: Projected area of driver diaphragm, in m²

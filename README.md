@@ -1,7 +1,7 @@
-Altay
+Altai
 =====
 
-*Altay* is a cross-platform application for simulating audio systems.  With it,
+*Altai* is a cross-platform application for simulating audio systems.  With it,
 you can obtain design speakers, find the optimum driver, predict frequency
 responses, etc.
 
@@ -14,16 +14,16 @@ directory. Then, point your browser to `docs/.build/html/index.html`.
 Dependencies
 ------------
 
-*Altay* is written in Python and additionally needs matplotlib, NumPy, SciPy
+*Altai* is written in Python and additionally needs matplotlib, NumPy, SciPy
 and PySide to be present.
 
 Installation
 ------------
 
-Clone the repository, and then simply execute `./altay` from the main
+Clone the repository, and then simply execute `./altai` from the main
 directory.
     
 License
 -------
 
-*Altay* is licensed under the BSD License. See the LICENSE file for details.
+*Altai* is licensed under the BSD License. See the LICENSE file for details.
