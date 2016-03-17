@@ -1,23 +1,14 @@
-.. Altay documentation master file, created by
-   sphinx-quickstart on Mon Dec 14 18:09:23 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Altai --- an open-source speaker design software
+================================================
 
-Welcome to Altay's documentation!
-=================================
+Altai is an open source software for designing loudspeakers and calculating
+their acoustic and electromechanical properties.
 
-Contents:
+.. image:: images/main_screen.png
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   installation
    contribute
    sourcedoc
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
