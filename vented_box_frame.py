@@ -14,57 +14,7 @@ import scipy.signal as signal
 # altai imports
 from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
-
-
-def get_response(driver, box):
-    """ Calculate system response of box and driver combination
-
-    Calculate system response of a certain driver in a vented box, according
-    to Small [1]_.
-
-    Parameters
-    ----------
-    driver : Driver
-        Driver to be used
-    box : VentedBox
-        Box to be used
-
-    Returns
-    -------
-    w : ndarray
-        the angular frequencies at which h was computed
-    h : ndarray
-        the frequency response
-
-    References
-    ----------
-    .. [1] Richard H. Small, "Vented-Box Loudspeaker Systems -- Part I"
-    """
-
-    a = np.zeros(5)
-    b = np.zeros(5)
-
-    # Response parameters
-    T_0 = np.sqrt(driver.Ts * box.Tb)
-    # tuning ratio
-    h = driver.Ts / box.Tb
-    # compliance ratio
-    c = driver.Cas / box.Cab
-
-    b[0] = T_0**4
-
-    a[0] = T_0**4
-    a[1] = T_0**3 * (box.Ql + h*driver.Qts)/(np.sqrt(h) * box.Ql * driver.Qts)
-    a[2] = T_0**2 * (h + (c + 1 + h**2) * driver.Qts * box.Ql) / (
-        h * driver.Qts * box.Ql)
-    a[3] = T_0 * (h*box.Ql + driver.Qts) / (np.sqrt(h) * driver.Qts * box.Ql)
-    a[4] = 1.0
-
-    start = np.log10(2*np.pi*20.0)
-    stop = np.log10(2*np.pi*300.0)
-    frequencies = np.logspace(start, stop, num=100)
-    w, h = signal.freqs(b, a, worN=frequencies)
-    return (w, h)
+from speaker import VentedSpeaker
 
 
 class VentedBoxFrame(QtGui.QWidget):
@@ -165,9 +115,10 @@ class VentedBoxFrame(QtGui.QWidget):
 
     def update_response(self):
         """ Update the response plot """
-        w, h = get_response(self.current_driver, self.current_box)
-        self.amplitude_line.set_xdata(w/(2*np.pi))
-        self.amplitude_line.set_ydata(20*np.log10(abs(h)))
+        speaker = VentedSpeaker(self.current_driver, self.current_box)
+        freqs, amplitude = speaker.frequency_response()
+        self.amplitude_line.set_xdata(freqs)
+        self.amplitude_line.set_ydata(amplitude)
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
         box_volume = 1e3*self.current_box.Vab
