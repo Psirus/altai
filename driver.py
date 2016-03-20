@@ -1,12 +1,19 @@
-""" Collect driver parameters """
+# -*- coding: utf-8 -*-
+"""Collect driver parameters."""
 import numpy as np
 import air
 
 
 class Driver(object):
-    """ Class to model drivers """
+    """Class to model driver units."""
 
     def __init__(self, manufacturer, model):
+        """Create a new driver.
+
+        Args:
+            manufacturer : manufacturer of the driver
+            model : model name of the driver
+        """
         #: Manufacturer Name
         self.manufacturer = manufacturer
         #: Model Name
@@ -42,7 +49,7 @@ class Driver(object):
 
     @property
     def fs(self):
-        """ Driver resonance frequency in Hz
+        """Driver resonance frequency in Hz.
 
         The resonance frequency of the driver, in Hz. Setting this attributes
         also sets :attr:`Ts` and :attr:`ws`.
@@ -51,14 +58,14 @@ class Driver(object):
 
     @fs.setter
     def fs(self, fs):
-        """ Set Fs, as well as ws and Ts """
+        """Set Fs, as well as ws and Ts."""
         self._fs = fs
         self.ws = 2*np.pi*fs
         self.Ts = 1/self.ws
 
     @property
     def Vas(self):
-        r""" Driver equivalent compliance volume
+        r"""Driver equivalent compliance volume.
 
         The equivalent compliance volume, i.e. that volume of air that has the
         same compliance as the drivers suspension
@@ -69,14 +76,16 @@ class Driver(object):
 
     @Vas.setter
     def Vas(self, Vas):
-        """ Set Vas, as well a Cas """
+        """Set Vas, as well a Cas."""
         self._Vas = Vas
         self.Cas = Vas / (air.RHO*air.C**2)
 
     def __repr__(self):
+        """Return a string representation of the driver."""
         return self.manufacturer + " " + self.model
 
     def dict_representation(self):
+        """Return a dict representation, useful for writing to JSON."""
         representation = {'manufacturer': self.manufacturer,
                           'model':        self.model,
                           'diameter':     self.diameter,
@@ -92,6 +101,16 @@ class Driver(object):
 
     @classmethod
     def from_dict(cls, dictionary):
+        """Create a new driver from a dictionary.
+
+        Args:
+            dictionary : dictionary that contains driver data
+
+        Example:
+            >>> driver_properties = {'manufacturer': "B&C Speakers", 
+            >>>                      'model': "15SW115", 'fs': 35.0}
+            >>> mydriver = Driver.from_dict(driver_properties)
+        """
         driver = cls(dictionary.get('manufacturer'), dictionary.get('model'))
         driver.diameter = dictionary.get('diameter')
         driver.weight   = dictionary.get('weight')

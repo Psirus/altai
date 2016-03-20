@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+"""Storing the runtime configuration of Altai."""
 import os
 import sys
 import shutil
@@ -17,10 +19,10 @@ except OSError:
 
 # check if local driver database exists; if not copy it from altai
 # source dir
-local_db_fname = os.path.join(altai_config_dir, 'driver_db.ddb')
+local_db_fname = os.path.join(altai_config_dir, 'driver_db.json')
 if not os.path.isfile(local_db_fname):
     altai_bin_dir = os.path.dirname(sys.argv[0])
-    included_db_fname = os.path.join(altai_bin_dir, 'driver_db.ddb')
+    included_db_fname = os.path.join(altai_bin_dir, 'driver_db.json')
     shutil.copy(included_db_fname, local_db_fname)
 
 # load driver database

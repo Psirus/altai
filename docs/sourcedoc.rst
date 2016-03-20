@@ -17,10 +17,46 @@ Air
 .. automodule:: air
    :members:
 
+Config
+------
+
+.. automodule:: config
+   :members:
+
 Driver
 ------
 
 .. automodule:: driver
+   :members:
+
+Driver Database
+---------------
+
+.. automodule:: driver_database
+   :members:
+
+Driver Database Frame
+---------------------
+
+.. automodule:: driver_db_frame
+   :members:
+
+Driver Selection Group
+----------------------
+
+.. automodule:: driver_selection_group
+   :members:
+
+Speaker
+-------
+
+.. automodule:: speaker
+   :members:
+
+Vent Dimensions Frame
+---------------------
+
+.. automodule:: vent_dimensions_frame
    :members:
 
 Vented Box
@@ -35,20 +71,3 @@ Vented Box Frame
 .. automodule:: vented_box_frame
    :members:
 
-Vent Dimensions Frame
----------------------
-
-.. automodule:: vent_dimensions_frame
-   :members:
-
-Driver Database
----------------
-
-.. automodule:: driver_database
-   :members:
-
-Driver Selection Group
-----------------------
-
-.. automodule:: driver_selection_group
-   :members:

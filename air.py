@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Properties of air, namely density and speed of sound """
+"""Collecting the properties of air, namely density and speed of sound."""
 #: Density ρ, at 0°C
 RHO = 1.293
 #: Speed of sound c, at O°C

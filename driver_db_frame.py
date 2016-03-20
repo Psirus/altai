@@ -1,14 +1,17 @@
+# -*- coding: utf-8 -*-
+"""Display the driver database as a table."""
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import config
 
 
 class DriverDatabaseFrame(QtGui.QWidget):
-    """ Display, sort, filter, etc the database of availabe drive units """
+    """Display, sort, filter, etc the database of availabe drive units."""
 
     new_manufacturer_added = QtCore.Signal(set)
 
     def __init__(self):
+        """Initialize database frame."""
         QtGui.QWidget.__init__(self)
 
         self.table_widget = QtGui.QTableWidget(self)
@@ -31,7 +34,11 @@ class DriverDatabaseFrame(QtGui.QWidget):
         self.setLayout(vbox)
 
     def add_driver_entry(self, driver):
-        """ Add a new driver entry to the QTableWidget """
+        """Add a new driver entry to the QTableWidget.
+
+        Args:
+            driver : driver to add to the table
+        """
         rows = self.table_widget.rowCount()
         self.table_widget.setRowCount(rows+1)
 
@@ -52,7 +59,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
             self.table_widget.setItem(rows, i, item)
 
     def add_driver(self):
-        """ Dialog for adding a new driver to the database """
+        """Dialog for adding a new driver to the database."""
         self.add_driver_dialog = QtGui.QDialog()
 
         # Driver general specification
@@ -155,6 +162,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
         self.add_driver_dialog.exec_()
 
     def write_driver_to_db(self):
+        """Add the newly created driver to the database."""
         new_driver = Driver(self.manuf_line.text(), self.model_line.text())
         new_driver.diameter = self.diameter_box.value()
         new_driver.power = self.power_box.value()
