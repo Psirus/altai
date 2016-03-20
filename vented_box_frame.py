@@ -1,11 +1,4 @@
 """ Calculate and plot the frequency response of box/driver combinations """
-# Matplotlib setup
-import matplotlib as mpl
-mpl.use('Qt4Agg')
-mpl.rcParams['backend.qt4'] = 'PySide'
-mpl.rcParams['lines.linewidth'] = 2.0
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-import matplotlib.figure as figure
 # system imports
 import numpy as np
 import PySide.QtGui as QtGui
@@ -15,6 +8,13 @@ import scipy.signal as signal
 from driver_selection_group import DriverSelectionGroup
 from vented_box import VentedBox
 from speaker import VentedSpeaker
+# Matplotlib setup
+import matplotlib as mpl
+mpl.use('Qt4Agg')
+mpl.rcParams['backend.qt4'] = 'PySide'
+mpl.rcParams['lines.linewidth'] = 2.0
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+import matplotlib.figure as figure
 
 
 class VentedBoxFrame(QtGui.QWidget):
@@ -131,9 +131,10 @@ class VentedBoxFrame(QtGui.QWidget):
 
     def add_new_response(self):
         """ Add an additional response to the plot """
-        w, h = get_response(self.current_driver, self.current_box)
+        speaker = VentedSpeaker(self.current_driver, self.current_box)
+        freqs, amplitude = speaker.frequency_response()
         self.amplitude_line, = self.amplitude_axes.semilogx(
-            w/(2*np.pi), 20*np.log10(abs(h)))
+                freqs, amplitude)
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
         box_volume = 1e3*self.current_box.Vab

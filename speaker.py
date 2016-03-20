@@ -3,11 +3,13 @@ import scipy.signal as signal
 import scipy.optimize as optimize
 import air
 
+
 class Speaker(object):
 
     def __init__(self, driver, box):
         self.driver = driver
         self.box = box
+
 
 class VentedSpeaker(Speaker):
 
@@ -30,10 +32,10 @@ class VentedSpeaker(Speaker):
         self.a[1] = (box.Ql + h*driver.Qts)/(np.sqrt(h) * box.Ql * driver.Qts)
         self.a[2] = (h + (c + 1 + h**2) * driver.Qts * box.Ql) / (
             h * driver.Qts * box.Ql)
-        self.a[3] = (h*box.Ql + driver.Qts) / (np.sqrt(h) * driver.Qts * box.Ql)
+        self.a[3] = (h*box.Ql + driver.Qts)/(np.sqrt(h) * driver.Qts * box.Ql)
         self.a[4] = 1.0
 
-    def f_3(self, f_start = 20.0):
+    def f_3(self):
         A1 = self.a[1]**2 - 2.0*self.a[2]
         A2 = self.a[2]**2 + 2.0 - 2*self.a[1]*self.a[3]
         A3 = self.a[3]**2 - 2.0*self.a[2]
@@ -51,9 +53,9 @@ class VentedSpeaker(Speaker):
 
         Parameters
         ----------
-        f_min : 
+        f_min :
             Lower frequency
-        f_max : 
+        f_max :
             Upper frequency
 
         EReturns

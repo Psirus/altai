@@ -75,3 +75,30 @@ class Driver(object):
 
     def __repr__(self):
         return self.manufacturer + " " + self.model
+
+    def dict_representation(self):
+        representation = {'manufacturer': self.manufacturer,
+                          'model':        self.model,
+                          'diameter':     self.diameter,
+                          'weight':       self.weight,
+                          'power':        self.power,
+                          'Qts':          self.Qts,
+                          'Sd':           self.Sd,
+                          'xmax':         self.xmax,
+                          'fs':           self.fs,
+                          'Vas':          self.Vas
+                          }
+        return representation
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        driver = cls(dictionary.get('manufacturer'), dictionary.get('model'))
+        driver.diameter = dictionary.get('diameter')
+        driver.weight   = dictionary.get('weight')
+        driver.power    = dictionary.get('power')
+        driver.Qts      = dictionary.get('Qts')
+        driver.Sd       = dictionary.get('Sd')
+        driver.xmax     = dictionary.get('xmax')
+        driver.fs       = dictionary.get('fs')
+        driver.Vas      = dictionary.get('Vas')
+        return driver
