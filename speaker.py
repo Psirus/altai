@@ -86,11 +86,10 @@ class VentedSpeaker(Speaker):
         amplitude = 20.0*np.log10(h)
         return (freqs, amplitude)
 
-#    def efficiency(self):
-#        f3 = self.f_3()
-#        factor = 4.0*np.pi**2 / (air.C**3)
-#        print(factor)
-#        v_ratio = self.driver.Vas / self.box.Vab
-#        tuning_ratio = self.driver.fs / f3
-#        k_eta = factor * v_ratio * tuning_ratio**3 / self.driver.Qes
-#        return k_eta * f3**3 * self.box.Vb
+    def reference_efficiency(self):
+        f3 = self.f_3()
+        factor = 4.0*np.pi**2 / (air.C**3)
+        v_ratio = self.driver.Vas / self.box.Vab
+        tuning_ratio = self.driver.fs / f3
+        k_eta = factor * v_ratio * tuning_ratio**3 / self.driver.Qes
+        return k_eta * f3**3 * self.box.Vab

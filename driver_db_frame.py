@@ -16,7 +16,8 @@ class DriverDatabaseFrame(QtGui.QWidget):
 
         self.table_widget = QtGui.QTableWidget(self)
         labels = ["Manufacturer", "Model", "d [in]", "Fs [Hz]", u"Vas [m³]",
-                  u"Sd [m²]", "Qts", "xmax [mm]", "m [kg]", "P (AES) [W]"]
+                  u"Sd [m²]", "Qts", "Qes", "xmax [mm]", "m [kg]", 
+                  "P (AES) [W]"]
         self.table_widget.setColumnCount(len(labels))
         self.table_widget.setHorizontalHeaderLabels(labels)
 
@@ -50,6 +51,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Vas)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Sd)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Qts)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Qes)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(1e3*driver.xmax)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.weight)))
         items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.power)))

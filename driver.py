@@ -26,6 +26,8 @@ class Driver(object):
         self.power = 0.0
         #: Total Q of driver
         self.Qts = 0.0
+        #: Electrical Q of driver
+        self.Qes = 0.0
         #: Projected area of driver diaphragm, in m²
         self.Sd = 0.0
         #: Linear peak excursion :math:`x_{max}` in m
@@ -95,7 +97,8 @@ class Driver(object):
                           'Sd':           self.Sd,
                           'xmax':         self.xmax,
                           'fs':           self.fs,
-                          'Vas':          self.Vas
+                          'Vas':          self.Vas,
+                          'Qes':          self.Qes
                           }
         return representation
 
@@ -120,4 +123,5 @@ class Driver(object):
         driver.xmax     = dictionary.get('xmax')
         driver.fs       = dictionary.get('fs')
         driver.Vas      = dictionary.get('Vas')
+        driver.Qes      = dictionary.get('Qes')
         return driver
