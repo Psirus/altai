@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Collect driver parameters."""
 import numpy as np
-import air
+from . import air
 
 
 class Driver(object):

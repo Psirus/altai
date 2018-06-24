@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Collecting multiple drivers in a database."""
 import json
-from driver import Driver
+from .driver import Driver
 
 
 class DriverDB(list):

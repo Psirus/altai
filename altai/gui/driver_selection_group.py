@@ -1,8 +1,8 @@
 """ Group from which to select manufacturer and model """
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
-import config
-from driver import Driver
+from . import config
+from ..lib.driver import Driver
 
 
 class DriverSelectionGroup(QtGui.QGroupBox):

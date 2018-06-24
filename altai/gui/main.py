@@ -7,10 +7,10 @@ from os.path import expanduser
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 # Altai imports
-import config
-from vented_box_frame import VentedBoxFrame
-from vent_dimensions_frame import VentDimensionsFrame
-from driver_db_frame import DriverDatabaseFrame
+from . import config
+from .vented_box_frame import VentedBoxFrame
+from .vent_dimensions_frame import VentDimensionsFrame
+from .driver_db_frame import DriverDatabaseFrame
 
 class Gui(QtGui.QMainWindow):
     """ Gui class for the main window. """
@@ -113,8 +113,3 @@ def main():
     gui = Gui()
     gui.show()
     app.exec_()
-
-
-if __name__ == "__main__":
-
-    main()

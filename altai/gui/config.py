@@ -4,7 +4,7 @@ import os
 import sys
 import shutil
 import PySide.QtGui as QtGui
-import driver_database
+from ..lib import driver_database
 
 # generate altai config dir if if does not exist;
 # under Unix '~/.local/share/data/altai'

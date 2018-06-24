@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Vented box enclosure """
 import numpy as np
-import air
+from . import air
 
 
 class VentedBox(object):

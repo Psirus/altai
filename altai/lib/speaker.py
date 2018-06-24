@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.signal as signal
 import scipy.optimize as optimize
-import air
+from . import air
 
 
 class Speaker(object):

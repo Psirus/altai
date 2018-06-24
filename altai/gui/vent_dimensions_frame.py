@@ -3,9 +3,9 @@
 import numpy as np
 import PySide.QtGui as QtGui
 
-import air
-from vented_box import VentedBox
-from driver_selection_group import DriverSelectionGroup
+from ..lib import air
+from ..lib.vented_box import VentedBox
+from .driver_selection_group import DriverSelectionGroup
 
 
 class VentDimensionsFrame(QtGui.QWidget):

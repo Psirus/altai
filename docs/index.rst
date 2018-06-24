@@ -15,4 +15,5 @@ their acoustic and electromechanical properties.
 
    installation
    contribute
-   sourcedoc
+   libsourcedoc
+   guisourcedoc

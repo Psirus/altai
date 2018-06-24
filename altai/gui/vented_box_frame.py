@@ -5,9 +5,9 @@ import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import scipy.signal as signal
 # altai imports
-from driver_selection_group import DriverSelectionGroup
-from vented_box import VentedBox
-from speaker import VentedSpeaker
+from .driver_selection_group import DriverSelectionGroup
+from ..lib.vented_box import VentedBox
+from ..lib.speaker import VentedSpeaker
 # Matplotlib setup
 import matplotlib as mpl
 mpl.use('Qt4Agg')

@@ -22,7 +22,7 @@ Download the latest release zip on Github_, unzip it and simple click on
 Under Windows/MacOSX
 --------------------
 
-I had no opportunity to test *Altai* under Windows or MacOSX, but the libraries
+I have no opportunity to test *Altai* under Windows or MacOSX, but the libraries
 used are all cross-platform, so if you get these installed, running *Altai*
 should be no problem. If you want to see *Altai* become easier to install and
 use under your OS, :ref:`feel free to join <contribute>`.

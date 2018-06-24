@@ -2,7 +2,8 @@
 """Display the driver database as a table."""
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
-import config
+from . import config
+from ..lib.driver import Driver
 
 
 class DriverDatabaseFrame(QtGui.QWidget):
@@ -176,7 +177,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
         new_driver.xmax = self.xmax_box.value()/1e3  # mm to m
 
         config.driver_db.append(new_driver)
-        config.driver_db.write_to_disk()
+        config.driver_db.write_to_disk(config.local_db_fname)
         self.add_driver_entry(new_driver)
 
         if new_driver.manufacturer not in config.driver_db.manufacturers:
