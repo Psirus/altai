@@ -2,9 +2,11 @@
 import unittest
 import filecmp
 import os
+
+import context
 from altai.lib import driver_database, vented_box, speaker
 
-database_file = "altai/lib/driver_db.json"
+database_file = "../altai/lib/driver_db.json"
 
 class DriverDataBaseTest(unittest.TestCase):
     """Testing the driver database."""
