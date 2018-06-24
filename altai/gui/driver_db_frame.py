@@ -16,6 +16,7 @@ class DriverDatabaseFrame(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
 
         self.table_widget = QtGui.QTableWidget(self)
+        self.table_widget.setSortingEnabled(True)
         labels = ["Manufacturer", "Model", "d [in]", "Fs [Hz]", u"Vas [m³]",
                   u"Sd [m²]", "Qts", "Qes", "xmax [mm]", "m [kg]", 
                   "P (AES) [W]"]
