@@ -1,9 +1,13 @@
 Altai
 =====
 
+[![Build Status](https://travis-ci.org/Psirus/altai.svg?branch=master)](https://travis-ci.org/Psirus/altai)
+
 *Altai* is a cross-platform application for simulating audio systems.  With it,
 you can obtain design speakers, find the optimum driver, predict frequency
 responses, etc.
+
+![Main Window](docs/images/main_screen.png)
 
 Documentation
 -------------
