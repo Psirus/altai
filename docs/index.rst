@@ -12,8 +12,16 @@ their acoustic and electromechanical properties.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Contents:
 
    installation
    contribute
    libsourcedoc
    guisourcedoc
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
