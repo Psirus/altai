@@ -17,13 +17,13 @@ class VentedBox(object):
         #: Angular frequency :math:`\omega_b = 2 \pi f_b`
         #:
         #: .. note:: Do not set this directly, use :meth:`fb`
-        self.wb = 2*np.pi*fb
+        self.wb = 2.0*np.pi*fb
         #: Time constant of the box :math:`T_b = \frac{1}{\omega_b}`; not to
         #: be confused with a period
         #: :math:`t = \frac{1}{f} = \frac{2\pi}{\omega}`
         #:
         #: .. note:: Do not set this directly, use :meth:`fb`
-        self.Tb = 1 / self.wb
+        self.Tb = 1.0 / self.wb
         #: Enclosure leakage losses
         self.Ql = Ql
 

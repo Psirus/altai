@@ -116,7 +116,7 @@ class VentedBoxFrame(QtGui.QWidget):
     def update_response(self):
         """ Update the response plot """
         speaker = VentedSpeaker(self.current_driver, self.current_box)
-        freqs, amplitude = speaker.frequency_response()
+        freqs, amplitude, _ = speaker.frequency_response()
         self.amplitude_line.set_xdata(freqs)
         self.amplitude_line.set_ydata(amplitude)
         manufacturer = self.current_driver.manufacturer
@@ -132,7 +132,7 @@ class VentedBoxFrame(QtGui.QWidget):
     def add_new_response(self):
         """ Add an additional response to the plot """
         speaker = VentedSpeaker(self.current_driver, self.current_box)
-        freqs, amplitude = speaker.frequency_response()
+        freqs, amplitude, _ = speaker.frequency_response()
         self.amplitude_line, = self.amplitude_axes.semilogx(
                 freqs, amplitude)
         manufacturer = self.current_driver.manufacturer
