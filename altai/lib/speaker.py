@@ -1,6 +1,5 @@
 import numpy as np
 import scipy.signal as signal
-import scipy.optimize as optimize
 from . import air
 
 
