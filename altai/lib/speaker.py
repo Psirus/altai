@@ -80,16 +80,31 @@ class VentedSpeaker(Speaker):
         a[2] *= self.T_0**2
         a[3] *= self.T_0
 
+        w, h = signal.freqs(b, a, worN=frequencies)
+        freqs = w / (2*np.pi)
+        amplitude = 20.0*np.log10(h)
+        return (freqs, amplitude)
+
+    def displacement(self, f_min=20.0, f_max=300.0):
+        start = np.log10(2*np.pi*f_min)
+        stop = np.log10(2*np.pi*f_max)
+        frequencies = np.logspace(start, stop, num=100)
+
+        a = self.a
+
+        a[0] *= self.T_0**4
+        a[1] *= self.T_0**3
+        a[2] *= self.T_0**2
+        a[3] *= self.T_0
+
         b2 = np.zeros(5)
         b2[2] = self.box.Tb**2
         b2[3] = self.box.Tb / self.box.Ql
         b2[4] = 1.0
 
-        w, h = signal.freqs(b, a, worN=frequencies)
         w, displacement = signal.freqs(b2, a, worN=frequencies)
         freqs = w / (2*np.pi)
-        amplitude = 20.0*np.log10(h)
-        return (freqs, amplitude, displacement)
+        return (freqs, np.abs(np.real(displacement)))
 
     def reference_efficiency(self):
         f3 = self.f_3()
