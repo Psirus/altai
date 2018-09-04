@@ -106,6 +106,19 @@ class VentedSpeaker(Speaker):
         freqs = w / (2*np.pi)
         return (freqs, np.abs(np.real(displacement)))
 
+    def step_response(self):
+        a = self.a
+        b = self.b
+        b[0] *= self.T_0**4
+
+        a[0] *= self.T_0**4
+        a[1] *= self.T_0**3
+        a[2] *= self.T_0**2
+        a[3] *= self.T_0
+
+        system = signal.lti(b, a)
+        return system.step(N=1000)
+
     def reference_efficiency(self):
         f3 = self.f_3()
         factor = 4.0*np.pi**2 / (air.C**3)
