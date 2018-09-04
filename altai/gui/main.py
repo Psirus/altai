@@ -4,24 +4,25 @@
 # System imports
 import sys
 from os.path import expanduser
-import PySide.QtGui as QtGui
-import PySide.QtCore as QtCore
+import PySide2.QtGui as QtGui
+import PySide2.QtCore as QtCore
+import PySide2.QtWidgets as QtWidgets
 # Altai imports
 from . import config
 from .vented_box_frame import VentedBoxFrame
 from .vent_dimensions_frame import VentDimensionsFrame
 from .driver_db_frame import DriverDatabaseFrame
 
-class Gui(QtGui.QMainWindow):
+class Gui(QtWidgets.QMainWindow):
     """ Gui class for the main window. """
 
     def __init__(self):
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         self.setWindowTitle("Altai")
 
         self.create_menu()
 
-        self.tab_bar = QtGui.QTabBar()
+        self.tab_bar = QtWidgets.QTabBar()
         self.tab_bar.addTab("Vented Box Response")
         self.tab_bar.addTab("Vent Dimensions")
         self.tab_bar.addTab("Driver Database")
@@ -37,14 +38,14 @@ class Gui(QtGui.QMainWindow):
 
         self.main_frames = [vented_box_frame, vent_dimensions_frame,
                             driver_database_frame]
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.tab_bar)
         for i, frame in enumerate(self.main_frames):
             vbox.addWidget(frame)
             if i > 0:
                 frame.hide()
 
-        self.main_frame = QtGui.QWidget()
+        self.main_frame = QtWidgets.QWidget()
         self.main_frame.setLayout(vbox)
         self.setCentralWidget(self.main_frame)
 
@@ -62,21 +63,21 @@ class Gui(QtGui.QMainWindow):
         menu_help = self.menuBar().addMenu("&Help")
 
         # Save Figure
-        act_save = QtGui.QAction(self)
+        act_save = QtWidgets.QAction(self)
         act_save.setText("Save Response as...")
         act_save.setIcon(QtGui.QIcon.fromTheme('document-save-as'))
         menu_file.addAction(act_save)
         act_save.triggered.connect(self.save_figure)
 
         # Exit button
-        act_exit = QtGui.QAction(self)
+        act_exit = QtWidgets.QAction(self)
         act_exit.setText("Exit")
         act_exit.setIcon(QtGui.QIcon.fromTheme('application-exit'))
         menu_file.addAction(act_exit)
         act_exit.triggered.connect(self.close)
 
         # About window
-        act_about = QtGui.QAction(self)
+        act_about = QtWidgets.QAction(self)
         act_about.setText("About")
         act_about.setIcon(QtGui.QIcon.fromTheme('help-about'))
         menu_help.addAction(act_about)
@@ -85,7 +86,7 @@ class Gui(QtGui.QMainWindow):
     def save_figure(self):
         """ Save figure as file; all filetypes that are supported by matplotlib"""
         home = expanduser("~")
-        fname, _ = QtGui.QFileDialog.getSaveFileName(
+        fname, _ = QtWidgets.QFileDialog.getSaveFileName(
             self, "Save Response as", home,
             "PDF, PNG and SVG (*.pdf *.png *.svg)")
         self.main_frames[0].fig.savefig(fname)
@@ -101,7 +102,7 @@ class Gui(QtGui.QMainWindow):
                  "Altai on GitHub</a>. Please report any issues and feature "
                  "ideas you may have.")
 
-        reply = QtGui.QMessageBox(self)
+        reply = QtWidgets.QMessageBox(self)
         reply.setWindowTitle("About Altai")
         reply.setTextFormat(QtCore.Qt.TextFormat.RichText)
         reply.setText(about)
@@ -109,7 +110,7 @@ class Gui(QtGui.QMainWindow):
 
 def main():
     """ Main function; acts as entry point for Altai. """
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     gui = Gui()
     gui.show()
     app.exec_()

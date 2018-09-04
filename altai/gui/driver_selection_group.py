@@ -1,30 +1,30 @@
 """ Group from which to select manufacturer and model """
-import PySide.QtCore as QtCore
-import PySide.QtGui as QtGui
+import PySide2.QtCore as QtCore
+import PySide2.QtWidgets as QtWidgets
 from . import config
 from ..lib.driver import Driver
 
 
-class DriverSelectionGroup(QtGui.QGroupBox):
+class DriverSelectionGroup(QtWidgets.QGroupBox):
     """ Group from which to select manufacturer and model """
 
     driver_changed = QtCore.Signal(Driver)
 
     def __init__(self):
         # Driver selection setup
-        QtGui.QGroupBox.__init__(self, "Driver Selection")
-        driver_selection_form = QtGui.QFormLayout(self)
+        QtWidgets.QGroupBox.__init__(self, "Driver Selection")
+        driver_selection_form = QtWidgets.QFormLayout(self)
         driver_selection_form.setFieldGrowthPolicy(
-            QtGui.QFormLayout.FieldsStayAtSizeHint)
+            QtWidgets.QFormLayout.FieldsStayAtSizeHint)
 
-        driver_manuf_label = QtGui.QLabel(self)
+        driver_manuf_label = QtWidgets.QLabel(self)
         driver_manuf_label.setText("Manufacturer")
-        self.driver_manuf_box = QtGui.QComboBox(self)
+        self.driver_manuf_box = QtWidgets.QComboBox(self)
         self.driver_manuf_box.activated.connect(self.set_manufacturer)
 
-        driver_model_label = QtGui.QLabel(self)
+        driver_model_label = QtWidgets.QLabel(self)
         driver_model_label.setText("Model")
-        self.driver_model_box = QtGui.QComboBox(self)
+        self.driver_model_box = QtWidgets.QComboBox(self)
         self.driver_model_box.activated.connect(self.change_driver)
 
         for manufacturer in config.driver_db.manufacturers:
