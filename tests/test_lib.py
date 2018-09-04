@@ -21,9 +21,9 @@ class SpeakerComputationTests(unittest.TestCase):
     def test_cutoff_calculation(self):
         driver_db = driver_database.DriverDB.from_file(context.database_file)
         driver = driver_db[0]
-        box = vented_box.VentedBox(Vab=90.0, fb=43.0, Ql=20.0)
+        box = vented_box.VentedBox(Vab=0.09, fb=43.0, Ql=20.0)
         ls = speaker.VentedSpeaker(driver, box)
-        self.assertAlmostEqual(ls.f_3(), 36.9606852)
+        self.assertAlmostEqual(ls.f_3(), 39.28176248051)
 
 if __name__ == '__main__':
     unittest.main()

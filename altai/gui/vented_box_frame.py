@@ -5,14 +5,17 @@ import PySide2.QtGui as QtGui
 import PySide2.QtCore as QtCore
 import PySide2.QtWidgets as QtWidgets
 import scipy.signal as signal
+
 # altai imports
 from .driver_selection_group import DriverSelectionGroup
 from ..lib.vented_box import VentedBox
 from ..lib.speaker import VentedSpeaker
+
 # Matplotlib setup
 import matplotlib as mpl
-mpl.use('Qt5Agg')
-mpl.rcParams['lines.linewidth'] = 2.0
+
+mpl.use("Qt5Agg")
+mpl.rcParams["lines.linewidth"] = 2.0
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import matplotlib.figure as figure
 
@@ -36,16 +39,19 @@ class VentedBoxFrame(QtWidgets.QWidget):
         bg_color = self.palette().color(QtGui.QPalette.Window).getRgbF()
         self.fig.set_facecolor(bg_color)
         self.canvas = FigureCanvasQTAgg(self.fig)
-        self.amplitude_axes = self.fig.add_subplot(111)
+        self.amplitude_axes = self.fig.add_subplot(211)
         self.amplitude_line, = self.amplitude_axes.semilogx(100.0, 0.0)
+        self.step_response_axes = self.fig.add_subplot(212)
+        self.step_response_line, = self.step_response_axes.plot(0.0, 0.0)
+        # self.displacement_axes = self.fig.add_subplot(224)
+        # self.displacement_line, = self.displacement_axes.plot(0.0, 0.0)
         self.set_plot_options()
         self.canvas.draw()
 
         # Box parameter setup
         box_param_group = QtWidgets.QGroupBox("Box Parameters")
         box_param_form = QtWidgets.QFormLayout(self)
-        box_param_form.setFieldGrowthPolicy(
-            QtWidgets.QFormLayout.FieldsStayAtSizeHint)
+        box_param_form.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldsStayAtSizeHint)
         box_volume_label = QtWidgets.QLabel(self)
         box_volume_label.setText("Box Volume")
         box_volume_spinbox = QtWidgets.QDoubleSpinBox(self)
@@ -67,7 +73,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
         qb3_box = VentedBox(Vab=0.022, fb=55.3, Ql=20.0)
         self.current_box = qb3_box
-        box_volume_spinbox.setValue(1e3*self.current_box.Vab)
+        box_volume_spinbox.setValue(1e3 * self.current_box.Vab)
         box_volume_spinbox.valueChanged.connect(self.change_box_size)
         box_fb_spinbox.setValue(self.current_box.fb)
         box_fb_spinbox.valueChanged.connect(self.change_box_fb)
@@ -95,7 +101,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
     def change_box_size(self, volume):
         """ Change box size and update response plot """
-        self.current_box.Vab = 1e-3*volume
+        self.current_box.Vab = 1e-3 * volume
         self.update_response()
 
     def change_box_fb(self, fb):
@@ -116,33 +122,43 @@ class VentedBoxFrame(QtWidgets.QWidget):
     def update_response(self):
         """ Update the response plot """
         speaker = VentedSpeaker(self.current_driver, self.current_box)
-        freqs, amplitude, _ = speaker.frequency_response()
+
+        freqs, amplitude = speaker.frequency_response()
         self.amplitude_line.set_xdata(freqs)
         self.amplitude_line.set_ydata(amplitude)
+
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
-        box_volume = 1e3*self.current_box.Vab
+        box_volume = 1e3 * self.current_box.Vab
         box_tuning = self.current_box.fb
-        label = '{0} {1} in {2:2g}l / {3}Hz'.format(
-            manufacturer, model, box_volume, box_tuning)
+        label = "{0} {1} in {2:2g}l / {3}Hz".format(
+            manufacturer, model, box_volume, box_tuning
+        )
         self.amplitude_line.set_label(label)
-        self.amplitude_axes.legend(loc='lower right')
+        self.amplitude_axes.legend(loc="lower right")
+
+        t, step_response = speaker.step_response()
+        self.step_response_line.set_xdata(t)
+        self.step_response_line.set_ydata(step_response)
+
         self.canvas.draw()
 
     def add_new_response(self):
         """ Add an additional response to the plot """
         speaker = VentedSpeaker(self.current_driver, self.current_box)
-        freqs, amplitude, _ = speaker.frequency_response()
-        self.amplitude_line, = self.amplitude_axes.semilogx(
-                freqs, amplitude)
+        freqs, amplitude = speaker.frequency_response()
+        self.amplitude_line, = self.amplitude_axes.semilogx(freqs, amplitude)
+        t, step_response = speaker.step_response()
+        self.step_response_line, = self.step_response_axes.plot(t, step_response)
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
-        box_volume = 1e3*self.current_box.Vab
+        box_volume = 1e3 * self.current_box.Vab
         box_tuning = self.current_box.fb
-        label = '{0} {1} in {2:2g}l / {3}Hz'.format(
-            manufacturer, model, box_volume, box_tuning)
+        label = "{0} {1} in {2:2g}l / {3}Hz".format(
+            manufacturer, model, box_volume, box_tuning
+        )
         self.amplitude_line.set_label(label)
-        self.amplitude_axes.legend(loc='lower right')
+        self.amplitude_axes.legend(loc="lower right")
         self.set_plot_options()
         self.canvas.draw()
 
@@ -151,7 +167,10 @@ class VentedBoxFrame(QtWidgets.QWidget):
         # Axis limits and grid
         self.amplitude_axes.set_xlim(20, 300)
         self.amplitude_axes.set_ylim(-36, 6)
-        self.amplitude_axes.grid(True, which='both')
+        self.amplitude_axes.grid(True, which="both")
+
+        self.step_response_axes.set_xlim(0, 0.0003)
+        self.step_response_axes.set_ylim(-1.0, 1.0)
 
         # x-ticks
         ticks = [30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200, 250]
@@ -169,3 +188,5 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.amplitude_axes.set_title("Frequency Response")
         self.amplitude_axes.set_xlabel("Frequency [Hz]")
         self.amplitude_axes.set_ylabel("Amplitude [dB]")
+
+        self.step_response_axes.set_title("Step Response")
