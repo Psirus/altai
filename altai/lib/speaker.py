@@ -25,19 +25,18 @@ class VentedSpeaker(Speaker):
 
         self.a = np.zeros(5)
         self.b = np.zeros(5)
-        self.b[0] = 1.0
+        self.b[0] = self.T_0**4
 
-        self.a[0] = 1.0
-        self.a[1] = (box.Ql + h*driver.Qts)/(np.sqrt(h) * box.Ql * driver.Qts)
-        self.a[2] = (h + (c + 1 + h**2) * driver.Qts * box.Ql) / (
-            h * driver.Qts * box.Ql)
-        self.a[3] = (h*box.Ql + driver.Qts)/(np.sqrt(h) * driver.Qts * box.Ql)
+        self.a[0] = self.T_0**4
+        self.a[1] = self.T_0**3 * (box.Ql + h*driver.Qts)/(np.sqrt(h) * box.Ql * driver.Qts)
+        self.a[2] = self.T_0**2 * (h + (c + 1 + h**2) * driver.Qts * box.Ql) / (h * driver.Qts * box.Ql)
+        self.a[3] = self.T_0 * (h*box.Ql + driver.Qts)/(np.sqrt(h) * driver.Qts * box.Ql)
         self.a[4] = 1.0
 
     def f_3(self):
-        A1 = self.a[1]**2 - 2.0*self.a[2]
-        A2 = self.a[2]**2 + 2.0 - 2*self.a[1]*self.a[3]
-        A3 = self.a[3]**2 - 2.0*self.a[2]
+        A1 = (self.a[1] / self.T_0**3)**2 - 2.0*self.a[2] / self.T_0**2
+        A2 = (self.a[2] / self.T_0**2)**2 + 2.0 - 2*self.a[1]*self.a[3] / self.T_0**4
+        A3 = (self.a[3] / self.T_0)**2 - 2.0*self.a[2] / self.T_0**2
         d_poly = np.poly1d([1.0, -A1, -A2, -A3, -1.0])
         roots = d_poly.r
         d = np.abs(roots[2])
@@ -71,16 +70,8 @@ class VentedSpeaker(Speaker):
         start = np.log10(2*np.pi*f_min)
         stop = np.log10(2*np.pi*f_max)
         frequencies = np.logspace(start, stop, num=100)
-        a = self.a.copy()
-        b = self.b.copy()
-        b[0] *= self.T_0**4
 
-        a[0] *= self.T_0**4
-        a[1] *= self.T_0**3
-        a[2] *= self.T_0**2
-        a[3] *= self.T_0
-
-        w, h = signal.freqs(b, a, worN=frequencies)
+        w, h = signal.freqs(self.b, self.a, worN=frequencies)
         freqs = w / (2*np.pi)
         amplitude = 20.0*np.log10(h)
         return (freqs, amplitude)
@@ -90,33 +81,17 @@ class VentedSpeaker(Speaker):
         stop = np.log10(2*np.pi*f_max)
         frequencies = np.logspace(start, stop, num=50)
 
-        a = self.a.copy()
-
-        a[0] *= self.T_0**4
-        a[1] *= self.T_0**3
-        a[2] *= self.T_0**2
-        a[3] *= self.T_0
-
         b2 = np.zeros(5)
         b2[2] = self.box.Tb**2
         b2[3] = self.box.Tb / self.box.Ql
         b2[4] = 1.0
 
-        w, displacement = signal.freqs(b2, a, worN=frequencies)
+        w, displacement = signal.freqs(b2, self.a, worN=frequencies)
         freqs = w / (2*np.pi)
         return (freqs, np.abs(np.real(displacement)))
 
     def step_response(self):
-        a = self.a.copy()
-        b = self.b.copy()
-        b[0] *= self.T_0**4
-
-        a[0] *= self.T_0**4
-        a[1] *= self.T_0**3
-        a[2] *= self.T_0**2
-        a[3] *= self.T_0
-
-        system = signal.lti(b, a)
+        system = signal.lti(self.b, self.a)
         return system.step(N=200)
 
     def reference_efficiency(self):
