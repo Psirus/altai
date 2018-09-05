@@ -71,7 +71,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
         box_param_form.addRow(box_ql_label, box_ql_spinbox)
         box_param_group.setLayout(box_param_form)
 
-        qb3_box = VentedBox(Vab=0.022, fb=55.3, Ql=20.0)
+        qb3_box = VentedBox(Vab=0.09, fb=40.0, Ql=20.0)
         self.current_box = qb3_box
         box_volume_spinbox.setValue(1e3 * self.current_box.Vab)
         box_volume_spinbox.valueChanged.connect(self.change_box_size)
@@ -170,14 +170,20 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.amplitude_axes.set_ylim(-36, 6)
         self.amplitude_axes.grid(True, which="both")
 
-        self.step_response_axes.set_xlim(0, 0.0003)
-        self.step_response_axes.set_ylim(-1.0, 1.0)
+        self.step_response_axes.set_xlim(0.0, 0.1)
+        self.step_response_axes.set_ylim(-0.5, 1.0)
+        self.step_response_axes.grid(True, which="both")
 
         # x-ticks
         ticks = [30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200, 250]
         ticklabels = [str(x) for x in ticks]
         self.amplitude_axes.set_xticks(ticks)
         self.amplitude_axes.set_xticklabels(ticklabels)
+
+        ticks = np.linspace(0.0, 0.1, 5)
+        ticklabels = [str(int(1e3*x)) for x in ticks]
+        self.step_response_axes.set_xticks(ticks)
+        self.step_response_axes.set_xticklabels(ticklabels)
 
         # y-ticks
         multiples_of_six = mpl.ticker.MultipleLocator(6)
@@ -191,3 +197,5 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.amplitude_axes.set_ylabel("Amplitude [dB]")
 
         self.step_response_axes.set_title("Step Response")
+        self.step_response_axes.set_xlabel("Time [ms]")
+        self.step_response_axes.set_ylabel("Normalized respones")
