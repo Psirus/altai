@@ -86,18 +86,19 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.update_response()
 
         # Assemble main view
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.addWidget(box_param_group)
-        hbox.addWidget(self.driver_selection)
-
         compare_button = QtWidgets.QPushButton("Freeze and Compare", self)
         compare_button.clicked.connect(self.add_new_response)
 
         vbox = QtWidgets.QVBoxLayout()
-        vbox.addLayout(hbox)
+        vbox.addWidget(box_param_group)
+        vbox.addWidget(self.driver_selection)
         vbox.addWidget(compare_button, alignment=QtCore.Qt.AlignHCenter)
-        vbox.addWidget(self.canvas, stretch=1)
-        self.setLayout(vbox)
+
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.addLayout(vbox)
+        hbox.addWidget(self.canvas, stretch=1)
+
+        self.setLayout(hbox)
 
     def change_box_size(self, volume):
         """ Change box size and update response plot """
