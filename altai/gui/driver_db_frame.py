@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 """Display the driver database as a table."""
-import PySide2.QtWidgets as QtWidgets
-import PySide2.QtCore as QtCore
-import PySide2.QtGui as QtGui
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 from . import config
 from ..lib.driver import Driver
 
 
-class DriverDatabaseFrame(QtWidgets.QWidget):
+class DriverDatabaseFrame(QtGui.QWidget):
     """Display, sort, filter, etc the database of availabe drive units."""
 
     new_manufacturer_added = QtCore.Signal(set)
 
     def __init__(self):
         """Initialize database frame."""
-        QtWidgets.QWidget.__init__(self)
+        QtGui.QWidget.__init__(self)
 
-        self.table_widget = QtWidgets.QTableWidget(self)
+        self.table_widget = QtGui.QTableWidget(self)
         self.table_widget.setSortingEnabled(True)
         labels = ["Manufacturer", "Model", "d [in]", "Fs [Hz]", u"Vas [m³]",
                   u"Sd [m²]", "Qts", "Qes", "xmax [mm]", "m [kg]", 
@@ -28,11 +27,11 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
         for driver in config.driver_db:
             self.add_driver_entry(driver)
 
-        add_driver_button = QtWidgets.QPushButton(self)
+        add_driver_button = QtGui.QPushButton(self)
         add_driver_button.setIcon(QtGui.QIcon.fromTheme('list-add'))
         add_driver_button.setText("Add new driver")
         add_driver_button.clicked.connect(self.add_driver)
-        vbox = QtWidgets.QVBoxLayout()
+        vbox = QtGui.QVBoxLayout()
         vbox.addWidget(add_driver_button, stretch=0)
         vbox.addWidget(self.table_widget)
         self.setLayout(vbox)
@@ -47,17 +46,17 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
         self.table_widget.setRowCount(rows+1)
 
         items = []
-        items.append(QtWidgets.QTableWidgetItem(driver.manufacturer))
-        items.append(QtWidgets.QTableWidgetItem(driver.model))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.diameter)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.fs)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.Vas)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.Sd)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.Qts)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.Qes)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(1e3*driver.xmax)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.weight)))
-        items.append(QtWidgets.QTableWidgetItem("{0:4g}".format(driver.power)))
+        items.append(QtGui.QTableWidgetItem(driver.manufacturer))
+        items.append(QtGui.QTableWidgetItem(driver.model))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.diameter)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.fs)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Vas)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Sd)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Qts)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.Qes)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(1e3*driver.xmax)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.weight)))
+        items.append(QtGui.QTableWidgetItem("{0:4g}".format(driver.power)))
 
         for i, item in enumerate(items):
             item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
@@ -65,36 +64,36 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
 
     def add_driver(self):
         """Dialog for adding a new driver to the database."""
-        self.add_driver_dialog = QtWidgets.QDialog()
+        self.add_driver_dialog = QtGui.QDialog()
 
         # Driver general specification
-        general_info = QtWidgets.QGroupBox("General Specification")
-        info_form = QtWidgets.QFormLayout()
-        info_form.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldsStayAtSizeHint)
+        general_info = QtGui.QGroupBox("General Specification")
+        info_form = QtGui.QFormLayout()
+        info_form.setFieldGrowthPolicy(QtGui.QFormLayout.FieldsStayAtSizeHint)
 
-        manuf_label = QtWidgets.QLabel()
+        manuf_label = QtGui.QLabel()
         manuf_label.setText("Manufacturer")
-        self.manuf_line = QtWidgets.QLineEdit()
+        self.manuf_line = QtGui.QLineEdit()
 
-        model_label = QtWidgets.QLabel()
+        model_label = QtGui.QLabel()
         model_label.setText("Model")
-        self.model_line = QtWidgets.QLineEdit()
+        self.model_line = QtGui.QLineEdit()
 
-        diameter_label = QtWidgets.QLabel()
+        diameter_label = QtGui.QLabel()
         diameter_label.setText("Diameter")
-        self.diameter_box = QtWidgets.QDoubleSpinBox()
+        self.diameter_box = QtGui.QDoubleSpinBox()
         self.diameter_box.setSuffix(' "')
         self.diameter_box.setRange(0.5, 40.0)
 
-        weight_label = QtWidgets.QLabel()
+        weight_label = QtGui.QLabel()
         weight_label.setText("Net Weight")
-        self.weight_box = QtWidgets.QDoubleSpinBox()
+        self.weight_box = QtGui.QDoubleSpinBox()
         self.weight_box.setSuffix(" kg")
         self.weight_box.setRange(0.1, 40.0)
 
-        power_label = QtWidgets.QLabel()
+        power_label = QtGui.QLabel()
         power_label.setText("AES Power Handling")
-        self.power_box = QtWidgets.QDoubleSpinBox()
+        self.power_box = QtGui.QDoubleSpinBox()
         self.power_box.setSuffix(" W")
         self.power_box.setRange(1.0, 4000.0)
 
@@ -106,35 +105,35 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
         general_info.setLayout(info_form)
 
         # Thiele/Small parameters
-        ts_info = QtWidgets.QGroupBox("Thiele/Small Parameters")
-        ts_form = QtWidgets.QFormLayout()
+        ts_info = QtGui.QGroupBox("Thiele/Small Parameters")
+        ts_form = QtGui.QFormLayout()
 
-        fs_label = QtWidgets.QLabel()
+        fs_label = QtGui.QLabel()
         fs_label.setText("Resonance Frequency: fs")
-        self.fs_box = QtWidgets.QDoubleSpinBox()
+        self.fs_box = QtGui.QDoubleSpinBox()
         self.fs_box.setSuffix(" Hz")
         self.fs_box.setRange(10.0, 2e4)
 
-        Qts_label = QtWidgets.QLabel()
+        Qts_label = QtGui.QLabel()
         Qts_label.setText("Total Q of Driver at fs: Qts")
-        self.Qts_box = QtWidgets.QDoubleSpinBox()
+        self.Qts_box = QtGui.QDoubleSpinBox()
         self.Qts_box.setRange(0.0, 1.0)
 
-        Sd_label = QtWidgets.QLabel()
+        Sd_label = QtGui.QLabel()
         Sd_label.setText("Diaphragm Area: Sd")
-        self.Sd_box = QtWidgets.QDoubleSpinBox()
+        self.Sd_box = QtGui.QDoubleSpinBox()
         self.Sd_box.setSuffix(u" cm²")
         self.Sd_box.setRange(0.0, 1e3)
 
-        xmax_label = QtWidgets.QLabel()
+        xmax_label = QtGui.QLabel()
         xmax_label.setText("Maximum linear peak excursion: xmax")
-        self.xmax_box = QtWidgets.QDoubleSpinBox()
+        self.xmax_box = QtGui.QDoubleSpinBox()
         self.xmax_box.setSuffix(" mm")
         self.xmax_box.setRange(0.0, 20.0)
 
-        Vas_label = QtWidgets.QLabel()
+        Vas_label = QtGui.QLabel()
         Vas_label.setText("Equivalent Compliance Volume: Vas")
-        self.Vas_box = QtWidgets.QDoubleSpinBox()
+        self.Vas_box = QtGui.QDoubleSpinBox()
         self.Vas_box.setSuffix(" l")
         self.Vas_box.setRange(0.0, 1e3)
 
@@ -146,12 +145,12 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
         ts_info.setLayout(ts_form)
 
         # Accept/cancel buttons
-        buttons_hbox = QtWidgets.QHBoxLayout()
-        accept_button = QtWidgets.QPushButton(self)
+        buttons_hbox = QtGui.QHBoxLayout()
+        accept_button = QtGui.QPushButton(self)
         accept_button.setIcon(QtGui.QIcon.fromTheme('dialog-apply'))
         accept_button.setText("Accept")
         accept_button.clicked.connect(self.write_driver_to_db)
-        cancel_button = QtWidgets.QPushButton(self)
+        cancel_button = QtGui.QPushButton(self)
         cancel_button.setIcon(QtGui.QIcon.fromTheme('gtk-close'))
         cancel_button.setText("Cancel")
         cancel_button.clicked.connect(self.add_driver_dialog.reject)
@@ -159,7 +158,7 @@ class DriverDatabaseFrame(QtWidgets.QWidget):
         buttons_hbox.addWidget(accept_button)
 
         # putting it together
-        vbox = QtWidgets.QVBoxLayout()
+        vbox = QtGui.QVBoxLayout()
         vbox.addWidget(general_info)
         vbox.addWidget(ts_info)
         vbox.addLayout(buttons_hbox)

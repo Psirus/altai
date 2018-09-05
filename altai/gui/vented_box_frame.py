@@ -1,9 +1,8 @@
 """ Calculate and plot the frequency response of box/driver combinations """
 # system imports
 import numpy as np
-import PySide2.QtGui as QtGui
-import PySide2.QtCore as QtCore
-import PySide2.QtWidgets as QtWidgets
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 import scipy.signal as signal
 
 # altai imports
@@ -13,14 +12,14 @@ from ..lib.speaker import VentedSpeaker
 
 # Matplotlib setup
 import matplotlib as mpl
-
-mpl.use("Qt5Agg")
-mpl.rcParams["lines.linewidth"] = 2.0
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+mpl.use('Qt4Agg')
+mpl.rcParams['backend.qt4'] = 'PySide'
+mpl.rcParams['lines.linewidth'] = 2.0
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 import matplotlib.figure as figure
 
 
-class VentedBoxFrame(QtWidgets.QWidget):
+class VentedBoxFrame(QtGui.QWidget):
     """ Predict frequency response of vented boxes according to Thiele & Small
 
     This is one of the main tabs of the application atm. You can choose your
@@ -32,7 +31,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
     """
 
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        QtGui.QWidget.__init__(self)
 
         # Initialize plot
         self.fig = figure.Figure((5.0, 4.0))
@@ -49,22 +48,23 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.canvas.draw()
 
         # Box parameter setup
-        box_param_group = QtWidgets.QGroupBox("Box Parameters")
-        box_param_form = QtWidgets.QFormLayout(self)
-        box_param_form.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldsStayAtSizeHint)
-        box_volume_label = QtWidgets.QLabel(self)
+        box_param_group = QtGui.QGroupBox("Box Parameters")
+        box_param_form = QtGui.QFormLayout(self)
+        box_param_form.setFieldGrowthPolicy(
+            QtGui.QFormLayout.FieldsStayAtSizeHint)
+        box_volume_label = QtGui.QLabel(self)
         box_volume_label.setText("Box Volume")
-        box_volume_spinbox = QtWidgets.QDoubleSpinBox(self)
+        box_volume_spinbox = QtGui.QDoubleSpinBox(self)
         box_volume_spinbox.setSuffix(" l")
         box_volume_spinbox.setRange(10.0, 400.0)
-        box_fb_label = QtWidgets.QLabel(self)
+        box_fb_label = QtGui.QLabel(self)
         box_fb_label.setText("Box Tuning Frequency")
-        box_fb_spinbox = QtWidgets.QDoubleSpinBox(self)
+        box_fb_spinbox = QtGui.QDoubleSpinBox(self)
         box_fb_spinbox.setSuffix(" Hz")
         box_fb_spinbox.setRange(20.0, 200.0)
-        box_ql_label = QtWidgets.QLabel(self)
+        box_ql_label = QtGui.QLabel(self)
         box_ql_label.setText("Box Leakage Losses Ql")
-        box_ql_spinbox = QtWidgets.QDoubleSpinBox(self)
+        box_ql_spinbox = QtGui.QDoubleSpinBox(self)
         box_ql_spinbox.setRange(2.0, 100.0)
         box_param_form.addRow(box_volume_label, box_volume_spinbox)
         box_param_form.addRow(box_fb_label, box_fb_spinbox)
@@ -86,14 +86,14 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.update_response()
 
         # Assemble main view
-        hbox = QtWidgets.QHBoxLayout()
+        hbox = QtGui.QHBoxLayout()
         hbox.addWidget(box_param_group)
         hbox.addWidget(self.driver_selection)
 
-        compare_button = QtWidgets.QPushButton("Freeze and Compare", self)
+        compare_button = QtGui.QPushButton("Freeze and Compare", self)
         compare_button.clicked.connect(self.add_new_response)
 
-        vbox = QtWidgets.QVBoxLayout()
+        vbox = QtGui.QVBoxLayout()
         vbox.addLayout(hbox)
         vbox.addWidget(compare_button, alignment=QtCore.Qt.AlignHCenter)
         vbox.addWidget(self.canvas, stretch=1)
