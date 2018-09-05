@@ -35,7 +35,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
 
         # Initialize plot
-        self.fig = figure.Figure((5.0, 4.0))
+        self.fig = figure.Figure((4.0, 3.0),tight_layout=True)
         bg_color = self.palette().color(QtGui.QPalette.Window).getRgbF()
         self.fig.set_facecolor(bg_color)
         self.canvas = FigureCanvasQTAgg(self.fig)
@@ -198,4 +198,4 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
         self.step_response_axes.set_title("Step Response")
         self.step_response_axes.set_xlabel("Time [ms]")
-        self.step_response_axes.set_ylabel("Normalized respones")
+        self.step_response_axes.set_ylabel("Normalized response")

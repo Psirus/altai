@@ -112,5 +112,6 @@ def main():
     """ Main function; acts as entry point for Altai. """
     app = QtWidgets.QApplication(sys.argv)
     gui = Gui()
+    gui.resize(800, 600)
     gui.show()
-    app.exec_()
+    sys.exit(app.exec_())
