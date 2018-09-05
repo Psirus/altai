@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 """ Module for calculating the vent dimensions of a given tuning """
 import numpy as np
-import PySide.QtGui as QtGui
+import PySide2.QtWidgets as QtWidgets
 
 from ..lib import air
 from ..lib.vented_box import VentedBox
 from .driver_selection_group import DriverSelectionGroup
 
 
-class VentDimensionsFrame(QtGui.QWidget):
+class VentDimensionsFrame(QtWidgets.QWidget):
     """ Find vent dimensions for given tuning """
 
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
 
         # Box parameter setup
-        box_param_group = QtGui.QGroupBox("Box Parameters")
-        box_param_form = QtGui.QFormLayout(self)
+        box_param_group = QtWidgets.QGroupBox("Box Parameters")
+        box_param_form = QtWidgets.QFormLayout(self)
         box_param_form.setFieldGrowthPolicy(
-            QtGui.QFormLayout.FieldsStayAtSizeHint)
-        box_volume_label = QtGui.QLabel(self)
+            QtWidgets.QFormLayout.FieldsStayAtSizeHint)
+        box_volume_label = QtWidgets.QLabel(self)
         box_volume_label.setText("Box Volume")
-        box_volume_spinbox = QtGui.QDoubleSpinBox(self)
+        box_volume_spinbox = QtWidgets.QDoubleSpinBox(self)
         box_volume_spinbox.setSuffix(" l")
         box_volume_spinbox.setRange(10.0, 400.0)
-        box_fb_label = QtGui.QLabel(self)
+        box_fb_label = QtWidgets.QLabel(self)
         box_fb_label.setText("Box Tuning Frequency")
-        box_fb_spinbox = QtGui.QDoubleSpinBox(self)
+        box_fb_spinbox = QtWidgets.QDoubleSpinBox(self)
         box_fb_spinbox.setSuffix(" Hz")
         box_fb_spinbox.setRange(20.0, 200.0)
         box_param_form.addRow(box_volume_label, box_volume_spinbox)
@@ -40,32 +40,32 @@ class VentDimensionsFrame(QtGui.QWidget):
         box_fb_spinbox.setValue(self.current_box.fb)
         box_fb_spinbox.valueChanged.connect(self.change_box_fb)
 
-        vent_geom_group = QtGui.QGroupBox("Vent Geometry")
-        vent_geom_form = QtGui.QFormLayout(self)
+        vent_geom_group = QtWidgets.QGroupBox("Vent Geometry")
+        vent_geom_form = QtWidgets.QFormLayout(self)
         vent_geom_form.setFieldGrowthPolicy(
-            QtGui.QFormLayout.FieldsStayAtSizeHint)
+            QtWidgets.QFormLayout.FieldsStayAtSizeHint)
 
         # Vent radius
-        vent_radius_label = QtGui.QLabel(self)
+        vent_radius_label = QtWidgets.QLabel(self)
         vent_radius_label.setText("Effective Vent Radius")
-        self.vent_radius_spinbox = QtGui.QDoubleSpinBox(self)
+        self.vent_radius_spinbox = QtWidgets.QDoubleSpinBox(self)
         self.vent_radius_spinbox.setSuffix(" mm")
         self.vent_radius_spinbox.setRange(0.0, 2e3)
         self.vent_radius_spinbox.setValue(25.0)
         self.vent_radius_spinbox.valueChanged.connect(self.radius_changed)
 
         # Vent area, just fyi
-        vent_area_label = QtGui.QLabel(self)
+        vent_area_label = QtWidgets.QLabel(self)
         vent_area_label.setText("<i>Vent Area</i>")
-        self.vent_area_value = QtGui.QLabel(self)
+        self.vent_area_value = QtWidgets.QLabel(self)
         radius = self.vent_radius_spinbox.value()
         vent_area = np.pi*radius**2
         self.vent_area_value.setText(u"{0:4g}mm²".format(vent_area))
 
         # Vent length
-        vent_length_label = QtGui.QLabel(self)
+        vent_length_label = QtWidgets.QLabel(self)
         vent_length_label.setText("Vent Length")
-        self.vent_length_spinbox = QtGui.QDoubleSpinBox(self)
+        self.vent_length_spinbox = QtWidgets.QDoubleSpinBox(self)
         self.vent_length_spinbox.setSuffix(" mm")
         self.vent_length_spinbox.setRange(0.0, 2e3)
         length = self.find_length(1e-3*radius)
@@ -77,11 +77,11 @@ class VentDimensionsFrame(QtGui.QWidget):
         vent_geom_form.addRow(vent_length_label, self.vent_length_spinbox)
         vent_geom_group.setLayout(vent_geom_form)
 
-        hbox = QtGui.QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(box_param_group)
         hbox.addWidget(vent_geom_group)
 
-        self.minimum_vent_area = QtGui.QLabel(self)
+        self.minimum_vent_area = QtWidgets.QLabel(self)
 
         # Driver selection setup
         self.driver_selection = DriverSelectionGroup()
@@ -89,7 +89,7 @@ class VentDimensionsFrame(QtGui.QWidget):
             self.update_model_vent_area)
         self.update_model_vent_area(self.driver_selection.current_driver)
 
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addLayout(hbox)
         vbox.addWidget(self.driver_selection)
         vbox.addWidget(self.minimum_vent_area)
