@@ -30,6 +30,8 @@ class Driver(object):
         self.Qes = 0.0
         #: Projected area of driver diaphragm, in m²
         self.Sd = 0.0
+        #: Mechanical mass (including air mass), in kg
+        self.Mms = 0.0
         #: Linear peak excursion :math:`x_{max}` in m
         self.xmax = 0.0
         #: Angular frequency :math:`\omega_s = 2 \pi f_s`
@@ -98,7 +100,8 @@ class Driver(object):
                           'xmax':         self.xmax,
                           'fs':           self.fs,
                           'Vas':          self.Vas,
-                          'Qes':          self.Qes
+                          'Qes':          self.Qes,
+                          'Mms':          self.Mms
                           }
         return representation
 
@@ -124,4 +127,5 @@ class Driver(object):
         driver.fs       = dictionary.get('fs')
         driver.Vas      = dictionary.get('Vas')
         driver.Qes      = dictionary.get('Qes')
+        driver.Mms      = dictionary.get('Mms')
         return driver

@@ -9,7 +9,7 @@ import scipy.signal as signal
 # altai imports
 from .driver_selection_group import DriverSelectionGroup
 from ..lib.vented_box import VentedBox
-from ..lib.speaker import VentedSpeaker
+from ..lib.speaker import VentedSpeaker, ClosedSpeaker
 
 # Matplotlib setup
 import matplotlib as mpl
@@ -33,6 +33,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
+        self.is_vented = True
 
         # Initialize plot
         self.fig = figure.Figure((4.0, 3.0),tight_layout=True)
@@ -50,8 +51,13 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
         # Box parameter setup
         box_param_group = QtWidgets.QGroupBox("Box Parameters")
-        box_param_form = QtWidgets.QFormLayout(self)
-        box_param_form.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldsStayAtSizeHint)
+        self.box_param_form = QtWidgets.QFormLayout(self)
+        self.box_param_form.setFieldGrowthPolicy(QtWidgets.QFormLayout.FieldsStayAtSizeHint)
+
+        closed_radio_button = QtWidgets.QRadioButton("Closed Box", self)
+        vented_radio_button = QtWidgets.QRadioButton("Vented Box", self)
+        vented_radio_button.setChecked(True)
+        vented_radio_button.toggled.connect(self.toggle_closed_vented)
         box_volume_label = QtWidgets.QLabel(self)
         box_volume_label.setText("Box Volume")
         box_volume_spinbox = QtWidgets.QDoubleSpinBox(self)
@@ -66,10 +72,12 @@ class VentedBoxFrame(QtWidgets.QWidget):
         box_ql_label.setText("Box Leakage Losses Ql")
         box_ql_spinbox = QtWidgets.QDoubleSpinBox(self)
         box_ql_spinbox.setRange(2.0, 100.0)
-        box_param_form.addRow(box_volume_label, box_volume_spinbox)
-        box_param_form.addRow(box_fb_label, box_fb_spinbox)
-        box_param_form.addRow(box_ql_label, box_ql_spinbox)
-        box_param_group.setLayout(box_param_form)
+        self.box_param_form.addRow(closed_radio_button)
+        self.box_param_form.addRow(vented_radio_button)
+        self.box_param_form.addRow(box_volume_label, box_volume_spinbox)
+        self.box_param_form.addRow(box_fb_label, box_fb_spinbox)
+        self.box_param_form.addRow(box_ql_label, box_ql_spinbox)
+        box_param_group.setLayout(self.box_param_form)
 
         qb3_box = VentedBox(Vab=0.09, fb=40.0, Ql=20.0)
         self.current_box = qb3_box
@@ -100,6 +108,27 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
         self.setLayout(hbox)
 
+    def toggle_closed_vented(self, is_vented):
+        self.is_vented = is_vented
+        self.toggle_tuning_row(is_vented)
+        self.update_response()
+        
+
+    def toggle_tuning_row(self, is_vented):
+        if is_vented:
+            # this code duplication is needed because PySide2 doesn't have `takeRow` yet
+            box_fb_label = QtWidgets.QLabel(self)
+            box_fb_label.setText("Box Tuning Frequency")
+            box_fb_spinbox = QtWidgets.QDoubleSpinBox(self)
+            box_fb_spinbox.setSuffix(" Hz")
+            box_fb_spinbox.setRange(20.0, 200.0)
+            box_fb_spinbox.setValue(40.0)
+            box_fb_spinbox.setValue(self.current_box.fb)
+            box_fb_spinbox.valueChanged.connect(self.change_box_fb)
+            self.box_param_form.insertRow(3, box_fb_label, box_fb_spinbox)
+        else:
+            self.box_param_form.removeRow(3)
+
     def change_box_size(self, volume):
         """ Change box size and update response plot """
         self.current_box.Vab = 1e-3 * volume
@@ -122,7 +151,10 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
     def update_response(self):
         """ Update the response plot """
-        speaker = VentedSpeaker(self.current_driver, self.current_box)
+        if self.is_vented:
+            speaker = VentedSpeaker(self.current_driver, self.current_box)
+        else:
+            speaker = ClosedSpeaker(self.current_driver, self.current_box)
 
         freqs, amplitude = speaker.frequency_response()
         self.amplitude_line.set_xdata(freqs)
@@ -146,7 +178,10 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
     def add_new_response(self):
         """ Add an additional response to the plot """
-        speaker = VentedSpeaker(self.current_driver, self.current_box)
+        if self.is_vented:
+            speaker = VentedSpeaker(self.current_driver, self.current_box)
+        else:
+            speaker = ClosedSpeaker(self.current_driver, self.current_box)
         freqs, amplitude = speaker.frequency_response()
         self.amplitude_line, = self.amplitude_axes.semilogx(freqs, amplitude)
         t, step_response = speaker.step_response()

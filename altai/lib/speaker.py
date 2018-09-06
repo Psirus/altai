@@ -10,6 +10,36 @@ class Speaker(object):
         self.box = box
 
 
+class ClosedSpeaker(Speaker):
+    def __init__(self, driver, box):
+        Speaker.__init__(self, driver, box)
+
+        self.Cat = driver.Cas * box.Cab / (driver.Cas + box.Cab)
+        self.T_C = np.sqrt(self.Cat * driver.Mms / driver.Sd**2)
+
+        self._a = np.zeros(3)
+        self._b = np.zeros(3)
+        self._b[0] = self.T_C**2
+
+        self._a[0] = self.T_C**2
+        self._a[1] = self.T_C / driver.Qts
+        self._a[2] = 1.0
+
+        self._system = signal.lti(self._b, self._a)
+
+    def frequency_response(self, f_min=20.0, f_max=300.0):
+        start = np.log10(2*np.pi*f_min)
+        stop = np.log10(2*np.pi*f_max)
+        frequencies = np.logspace(start, stop, num=100)
+
+        w, h = self._system.freqresp(w=frequencies)
+        freqs = w / (2*np.pi)
+        amplitude = 20.0*np.log10(np.abs(h))
+        return (freqs, amplitude)
+
+    def step_response(self):
+        return self._system.step(N=200)
+
 class VentedSpeaker(Speaker):
 
     def __init__(self, driver, box):
