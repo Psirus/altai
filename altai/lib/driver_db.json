@@ -24,5 +24,18 @@
         "power": 1200,
         "weight": 7.6,
         "xmax": 0.01
+    },
+    {
+        "Qes": 0.41,
+        "Qts": 0.38,
+        "Sd": 0.08563,
+        "Vas": 0.159,
+        "diameter": 15,
+        "fs": 39.0,
+        "manufacturer": "Eminence",
+        "model": "Kappa 15LFA",
+        "power": 600,
+        "weight": 9.07,
+        "xmax": 0.0055
     }
 ]

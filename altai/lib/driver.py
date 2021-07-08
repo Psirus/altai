@@ -49,6 +49,7 @@ class Driver(object):
         self._fs = 0.0
         self._Vas = 0.0
 
+
     @property
     def fs(self):
         """Driver resonance frequency in Hz.
@@ -81,6 +82,10 @@ class Driver(object):
         """Set Vas, as well a Cas."""
         self._Vas = Vas
         self.Cas = Vas / (air.RHO*air.C**2)
+
+    @property
+    def Vd(self):
+        return self.xmax * self.Sd
 
     def __repr__(self):
         """Return a string representation of the driver."""

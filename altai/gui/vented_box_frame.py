@@ -36,8 +36,16 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
         # Initialize plot
         self.fig = figure.Figure((4.0, 3.0),tight_layout=True)
+        text_color = self.palette().color(QtGui.QPalette.Text).getRgbF()
+        mpl.rcParams['text.color'] = text_color
+        mpl.rcParams['axes.labelcolor'] = text_color
+        mpl.rcParams['xtick.color'] = text_color
+        mpl.rcParams['ytick.color'] = text_color
+
         bg_color = self.palette().color(QtGui.QPalette.Window).getRgbF()
         self.fig.set_facecolor(bg_color)
+        mpl.rcParams['axes.facecolor'] = bg_color
+
         self.canvas = FigureCanvasQTAgg(self.fig)
         self.amplitude_axes = self.fig.add_subplot(211)
         self.amplitude_line, = self.amplitude_axes.semilogx(100.0, 0.0)
@@ -83,20 +91,30 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.driver_selection = DriverSelectionGroup()
         self.driver_selection.driver_changed.connect(self.driver_changed)
         self.current_driver = self.driver_selection.current_driver
+
+        output_text = QtWidgets.QLabel(self)
+        output_text.setText("Displacement limited output:")
+        self.output_val = QtWidgets.QLabel(self)
+
         self.update_response()
 
         # Assemble main view
         compare_button = QtWidgets.QPushButton("Freeze and Compare", self)
         compare_button.clicked.connect(self.add_new_response)
 
-        vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(box_param_group)
-        vbox.addWidget(self.driver_selection)
-        vbox.addWidget(compare_button, alignment=QtCore.Qt.AlignHCenter)
+        leftPlane = QtWidgets.QVBoxLayout()
+        leftPlane.addWidget(box_param_group)
+        leftPlane.addWidget(self.driver_selection)
+        leftPlane.addWidget(compare_button, alignment=QtCore.Qt.AlignHCenter)
+
+        rightPlane = QtWidgets.QVBoxLayout()
+        rightPlane.addWidget(self.canvas, stretch=1)
+        rightPlane.addWidget(output_text)
+        rightPlane.addWidget(self.output_val)
 
         hbox = QtWidgets.QHBoxLayout()
-        hbox.addLayout(vbox)
-        hbox.addWidget(self.canvas, stretch=1)
+        hbox.addLayout(leftPlane)
+        hbox.addLayout(rightPlane, stretch=1)
 
         self.setLayout(hbox)
 
@@ -122,9 +140,9 @@ class VentedBoxFrame(QtWidgets.QWidget):
 
     def update_response(self):
         """ Update the response plot """
-        speaker = VentedSpeaker(self.current_driver, self.current_box)
+        self.speaker = VentedSpeaker(self.current_driver, self.current_box)
 
-        freqs, amplitude = speaker.frequency_response()
+        freqs, amplitude = self.speaker.frequency_response()
         self.amplitude_line.set_xdata(freqs)
         self.amplitude_line.set_ydata(amplitude)
 
@@ -138,18 +156,19 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.amplitude_line.set_label(label)
         self.amplitude_axes.legend(loc="lower right")
 
-        t, step_response = speaker.step_response()
+        t, step_response = self.speaker.step_response()
         self.step_response_line.set_xdata(t)
         self.step_response_line.set_ydata(step_response)
 
         self.canvas.draw()
+        self.output_val.setText(f"{self.speaker.displacement_limited_output():4g} dB")
 
     def add_new_response(self):
         """ Add an additional response to the plot """
-        speaker = VentedSpeaker(self.current_driver, self.current_box)
-        freqs, amplitude = speaker.frequency_response()
+        self.speaker = VentedSpeaker(self.current_driver, self.current_box)
+        freqs, amplitude = self.speaker.frequency_response()
         self.amplitude_line, = self.amplitude_axes.semilogx(freqs, amplitude)
-        t, step_response = speaker.step_response()
+        t, step_response = self.speaker.step_response()
         self.step_response_line, = self.step_response_axes.plot(t, step_response)
         manufacturer = self.current_driver.manufacturer
         model = self.current_driver.model
@@ -162,6 +181,7 @@ class VentedBoxFrame(QtWidgets.QWidget):
         self.amplitude_axes.legend(loc="lower right")
         self.set_plot_options()
         self.canvas.draw()
+        self.output_val.setText(f"{self.speaker.displacement_limited_output():4g} dB")
 
     def set_plot_options(self):
         """ Set the appearance of the plot """
